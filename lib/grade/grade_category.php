@@ -686,14 +686,20 @@ class grade_category extends grade_object {
             case GRADE_AGGREGATE_WEIGHTED_MEAN: // Weighted average of all existing final grades, weight specified in coef
                 $weightsum = 0;
                 $sum       = 0;
+                $extrasum  = 0;
 
                 foreach ($grade_values as $itemid=>$grade_value) {
 
-                    if ($items[$itemid]->aggregationcoef <= 0) {
+                    $coef = $items[$itemid]->aggregationcoef;
+
+                    if ($coef == 0) {
                         continue;
+                    } else if ($coef < 0) {
+                        $extrasum += ($grade_value / 10);
+                    } else {
+                        $weightsum += $coef;
+                        $sum       += $coef * $grade_value;
                     }
-                    $weightsum += $items[$itemid]->aggregationcoef;
-                    $sum       += $items[$itemid]->aggregationcoef * $grade_value;
                 }
 
                 if ($weightsum == 0) {
@@ -702,6 +708,8 @@ class grade_category extends grade_object {
                 } else {
                     $agg_grade = $sum / $weightsum;
                 }
+
+                $agg_grade += $extrasum;
                 break;
 
             case GRADE_AGGREGATE_WEIGHTED_MEAN2:
@@ -790,9 +798,11 @@ class grade_category extends grade_object {
         //find max grade possible
         $maxes = array();
 
+        $notweightedmean = $this->aggregation != GRADE_AGGREGATE_WEIGHTED_MEAN;
+
         foreach ($items as $item) {
 
-            if ($item->aggregationcoef > 0) {
+            if (($notweightedmean and $item->aggregationcoef > 0) or $item->aggregationcoef < 0) {
                 // extra credit from this activity - does not affect total
                 continue;
             }
@@ -885,10 +895,16 @@ class grade_category extends grade_object {
             $dropped = 0;
 
             foreach ($grade_values as $itemid=>$value) {
+                $coef = $items[$itemid]->aggregationcoef;
+
+                $validextra = (
+                    ($this->aggregation == GRADE_AGGREGATE_WEIGHTED_MEAN and $coef < 0) or
+                    $coef > 0
+                );
 
                 if ($dropped < $this->droplow) {
 
-                    if ($extraused and $items[$itemid]->aggregationcoef > 0) {
+                    if ($extraused and $validextra) {
                         // no drop low for extra credits
 
                     } else {
@@ -907,8 +923,14 @@ class grade_category extends grade_object {
             $kept = 0;
 
             foreach ($grade_values as $itemid=>$value) {
+                $coef = $items[$itemid]->aggregationcoef;
 
-                if ($extraused and $items[$itemid]->aggregationcoef > 0) {
+                $validextra = (
+                    ($this->aggregation == GRADE_AGGREGATE_WEIGHTED_MEAN and $coef < 0) or
+                    $coef > 0
+                );
+
+                if ($extraused and $validextra) {
                     // we keep all extra credits
 
                 } else if ($kept < $this->keephigh) {
@@ -929,7 +951,8 @@ class grade_category extends grade_object {
     function is_extracredit_used() {
         return ($this->aggregation == GRADE_AGGREGATE_WEIGHTED_MEAN2
              or $this->aggregation == GRADE_AGGREGATE_EXTRACREDIT_MEAN
-             or $this->aggregation == GRADE_AGGREGATE_SUM);
+             or $this->aggregation == GRADE_AGGREGATE_SUM
+             or $this->aggregation == GRADE_AGGREGATE_WEIGHTED_MEAN);
     }
 
     /**
