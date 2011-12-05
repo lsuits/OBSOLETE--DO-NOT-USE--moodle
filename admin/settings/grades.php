@@ -94,6 +94,9 @@ if (has_capability('moodle/grade:manage', $systemcontext)
 
         $options = array(0 => get_string('no'), 1 => get_string('yes'));
 
+        $temp->add(new admin_setting_configcheckbox('grade_overridecat', get_string('overridecat', 'grades'),
+            get_string('overridecat_help', 'grades'), 1));
+
         $defaults = array('value'=>1, 'forced'=>false, 'adv'=>true);
         $temp->add(new admin_setting_gradecat_combo('grade_aggregateonlygraded', get_string('aggregateonlygraded', 'grades'),
                     get_string('aggregateonlygraded_help', 'grades'), $defaults, $options));
