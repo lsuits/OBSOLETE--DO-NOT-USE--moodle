@@ -10,7 +10,7 @@
 }
 
 .course-content ul.weeks li.section ul.section {
-   margin:0 0 0 20px;
+   margin:0 100px 0 20px;
 }
 
 .course-content ul.weeks li.section .content {
@@ -70,7 +70,7 @@
 }
 
 .course-content ul.topics li.section ul.section {
-   margin:0 0 0 20px;
+   margin:0 100px 0 20px;
    padding: 0 0 10px 0;
 }
 
@@ -112,6 +112,10 @@
 
 .editing .course-content ul li.section .content ul.section {
    margin-left: 70px;
+}
+
+.editing .course-content a.editing_assign {
+  display: none;
 }
 
 /** Course **/
@@ -201,8 +205,8 @@
 }
 
 .path-course-view .dimmed_text img {
-   opacity:0.3;
-   filter: alpha(opacity='30');
+   opacity:0.9;
+   filter: alpha(opacity='90');
 }
 
 .path-course-view .section {
