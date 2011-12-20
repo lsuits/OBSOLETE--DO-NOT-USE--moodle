@@ -1,0 +1,3 @@
+[submodule "theme/lsu"]
+	path = theme/lsu
+	url = git@github.com:lsuits/lsu_theme.git
