@@ -1,3 +1,6 @@
 [submodule "theme/lsu"]
 	path = theme/lsu
 	url = git@github.com:lsuits/lsu_theme.git
+[submodule "blocks/quickmail"]
+	path = blocks/quickmail
+	url = git@github.com:lsuits/quickmail.git
