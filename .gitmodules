@@ -4,3 +4,6 @@
 [submodule "blocks/quickmail"]
 	path = blocks/quickmail
 	url = git@github.com:lsuits/quickmail.git
+[submodule "blocks/helpdesk"]
+	path = blocks/helpdesk
+	url = git@github.com:lsuits/helpdesk.git
