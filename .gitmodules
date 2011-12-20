@@ -7,3 +7,6 @@
 [submodule "blocks/helpdesk"]
 	path = blocks/helpdesk
 	url = git@github.com:lsuits/helpdesk.git
+[submodule "blocks/scantron"]
+	path = blocks/scantron
+	url = git@github.com:lsuits/scantron.git
