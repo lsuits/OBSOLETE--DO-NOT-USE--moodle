@@ -34,3 +34,6 @@
 [submodule "grade/report/grade_breakdown"]
 	path = grade/report/grade_breakdown
 	url = git@github.com:lsuits/grade_breakdown.git
+[submodule "enrol/ues"]
+	path = enrol/ues
+	url = git@github.com:lsuits/ues.git
