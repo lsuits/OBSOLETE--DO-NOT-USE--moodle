@@ -31,3 +31,6 @@
 [submodule "grade/export/csv"]
 	path = grade/export/csv
 	url = git@github.com:lsuits/csv.git
+[submodule "grade/report/grade_breakdown"]
+	path = grade/report/grade_breakdown
+	url = git@github.com:lsuits/grade_breakdown.git
