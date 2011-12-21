@@ -10,3 +10,6 @@
 [submodule "blocks/scantron"]
 	path = blocks/scantron
 	url = git@github.com:lsuits/scantron.git
+[submodule "blocks/my_picture"]
+	path = blocks/my_picture
+	url = git@github.com:lsuits/my_picture.git
