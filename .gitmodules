@@ -40,3 +40,6 @@
 [submodule "blocks/cps"]
 	path = blocks/cps
 	url = git@github.com:lsuits/cps.git
+[submodule "blocks/ues_logs"]
+	path = blocks/ues_logs
+	url = git@github.com:lsuits/ues_logs.git
