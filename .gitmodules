@@ -37,3 +37,6 @@
 [submodule "enrol/ues"]
 	path = enrol/ues
 	url = git@github.com:lsuits/ues.git
+[submodule "blocks/cps"]
+	path = blocks/cps
+	url = git@github.com:lsuits/cps.git
