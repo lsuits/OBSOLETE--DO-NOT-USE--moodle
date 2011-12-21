@@ -19,3 +19,6 @@
 [submodule "blocks/rollsheets"]
 	path = blocks/rollsheets
 	url = git@github.com:lsuits/rollsheets.git
+[submodule "blocks/bulk_delete"]
+	path = blocks/bulk_delete
+	url = git@github.com:lsuits/bulk_delete.git
