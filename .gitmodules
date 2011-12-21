@@ -16,3 +16,6 @@
 [submodule "blocks/admin_email"]
 	path = blocks/admin_email
 	url = git@github.com:lsuits/admin_email.git
+[submodule "blocks/rollsheets"]
+	path = blocks/rollsheets
+	url = git@github.com:lsuits/rollsheets.git
