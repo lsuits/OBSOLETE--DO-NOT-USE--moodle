@@ -25,3 +25,6 @@
 [submodule "blocks/backadel"]
 	path = blocks/backadel
 	url = git@github.com:lsuits/backadel.git
+[submodule "blocks/simple_restore"]
+	path = blocks/simple_restore
+	url = git@github.com:lsuits/simple_restore.git
