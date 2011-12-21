@@ -13,3 +13,6 @@
 [submodule "blocks/my_picture"]
 	path = blocks/my_picture
 	url = git@github.com:lsuits/my_picture.git
+[submodule "blocks/admin_email"]
+	path = blocks/admin_email
+	url = git@github.com:lsuits/admin_email.git
