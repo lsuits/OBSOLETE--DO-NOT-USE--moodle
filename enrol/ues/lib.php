@@ -97,12 +97,9 @@ class enrol_ues_plugin extends enrol_plugin {
         $this->setting('running', true);
 
         if ($this->provider()) {
-            $this->log("
-      __  __________  ____              ____               __
-     / / / / __/ __/ / __/__  _______  / / /_ _  ___ ___  / /_
-    / /_/ / _/_\ \  / _// _ \/ __/ _ \/ / /  ' \/ -_) _ \/ __/
-    \____/___/___/ /___/_//_/_/  \___/_/_/_/_/_/\__/_//_/\__/
-            ");
+            $this->log('------------------------------------------------');
+            $this->log(ues::_s('pluginname'));
+            $this->log('------------------------------------------------');
 
             $start = microtime();
 
@@ -127,11 +124,11 @@ class enrol_ues_plugin extends enrol_plugin {
 
         $admins = get_admins();
 
-        if ($this->setting('email_report')) {
+        if ($this->setting('email_report') and !empty($this->emaillog)) {
             $email_text = implode("\n", $this->emaillog);
 
             foreach ($admins as $admin) {
-                email_to_user($admin, $CFG->noreplyaddress,
+                email_to_user($admin, ues::_s('pluginname'),
                     'UES Log', $email_text);
             }
         }
@@ -140,7 +137,7 @@ class enrol_ues_plugin extends enrol_plugin {
             $error_text = implode("\n", $this->errors);
 
             foreach ($admins as $admin) {
-                email_to_user($admin, $CFG->noreplyaddress,
+                email_to_user($admin, ues::_s('pluginname'),
                     '[SEVERE] UES Errors', $error_text);
             }
         }
@@ -935,11 +932,16 @@ class enrol_ues_plugin extends enrol_plugin {
         } else if ($prev = ues_user::get($by_username, true)) {
             $user->id = $prev->id;
         } else {
+            global $CFG;
+
             $user->email = $user->username . $this->setting('user_email');
             $user->confirmed = $this->setting('user_confirm');
             $user->city = $this->setting('user_city');
             $user->country = $this->setting('user_country');
             $user->firstaccess = time();
+            $user->timecreated = $user->firstaccess;
+            $user->auth = $this->setting('user_auth');
+            $user->mnethostid = $CFG->mnet_localhost_id; // always local user
 
             $created = true;
         }
