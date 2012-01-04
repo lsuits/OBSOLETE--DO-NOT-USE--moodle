@@ -394,6 +394,8 @@ $string['meanselection'] = 'Grades selected for column averages';
 $string['meanselection_help'] = 'This setting determines whether cells with no grade should be included when calculating the average (mean) for each category or grade item.';
 $string['median'] = 'Median';
 $string['min'] = 'Lowest';
+$string['minimum_hide'] = 'Hide ' . $string['grademin'] . '.';
+$string['minimum_hide_help'] = 'By default, ' . $string['grademin'] . ' is used in calculating grades and weights. By hiding this feature, ' . $string['grademin'] . ' will be zero in all value grading scenarios.';
 $string['missingscale'] = 'Scale must be selected';
 $string['mode'] = 'Mode';
 $string['morethanmax'] = 'The grade entered for {$a->itemname} for {$a->username} is more than the maximum allowed';
@@ -459,6 +461,10 @@ $string['outcomesstandardavailable'] = 'Available standard outcomes';
 $string['outcomestandard'] = 'Standard outcome';
 $string['outcomestandard_help'] = 'A standard outcome is available site-wide, for all courses.';
 $string['overallaverage'] = 'Overall average';
+$string['overridecat'] = 'Allow Grade Override';
+$string['overridecat_help'] = 'This option allows users to override the final
+grade in for category totals. Unchecking this option will make category totals
+uneditable.';
 $string['overridden'] = 'Overridden';
 $string['overridden_help'] = 'If ticked, the grade can no longer be changed from within the related activity.
 
@@ -606,6 +612,8 @@ $string['submissions'] = 'Submissions';
 $string['submittedon'] = 'Submitted: {$a}';
 $string['switchtofullview'] = 'Switch to full view';
 $string['switchtosimpleview'] = 'Switch to simple view';
+$string['swm_ec'] = 'Weighted SWM ' . $string['aggregationcoefextra'];
+$string['swm_ec_help'] = 'By default, '.$string['aggregationcoefextra'].' in '.$string['aggregateweightedmean2'].' grade category is weighted. Unchecked this option to allow extra credit items to simply add points to the aggregated total.';
 $string['tabs'] = 'Tabs';
 $string['topcategory'] = 'Super category';
 $string['total'] = 'Total';
