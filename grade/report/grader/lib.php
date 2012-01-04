@@ -926,6 +926,11 @@ class grade_report_grader extends grade_report {
 
                 } else if ($USER->gradeediting[$this->courseid]) {
 
+                    // Editing means user edit manual item raw
+                    if ($item->is_manual_item()) {
+                        $gradeval = $grade->rawgrade;
+                    }
+
                     if ($item->scaleid && !empty($scalesarray[$item->scaleid])) {
                         $scale = $scalesarray[$item->scaleid];
                         $gradeval = (int)$gradeval; // scales use only integers
@@ -1438,7 +1443,7 @@ class grade_report_grader extends grade_report {
      * figures out the state of the object and builds then returns a div
      * with the icons needed for the grader report.
      *
-     * @param array $object
+     * @param object $object
      * @return string HTML
      */
     protected function get_icons($element) {
@@ -1451,7 +1456,15 @@ class grade_report_grader extends grade_report {
         // Init all icons
         $editicon = '';
 
-        if ($element['type'] != 'categoryitem' && $element['type'] != 'courseitem') {
+        if ($element['type'] == 'grade') {
+            $item = $element['object']->grade_item;
+
+            $overridable = $item->is_overridable_item();
+        } else {
+            $overridable = true;
+        }
+
+        if ($element['type'] != 'categoryitem' && $element['type'] != 'courseitem' &&$overridable) {
             $editicon = $this->gtree->get_edit_icon($element, $this->gpr);
         }
 
