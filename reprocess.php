@@ -52,15 +52,17 @@ if (empty($course->idnumber)) {
 
     echo "Found an instructor on record with id: {$teacher->userid}\n";
 
-    $sql = "SELECT g.* FROM {groups} g, {group_members} gr WHERE gr = :userid AND g.courseid = :courseid AND g.id = gr.groupid ORDER BY g.id ASC";
+    $sql = "SELECT g.* FROM {groups} g, {group_members} gr WHERE gr.userid = :userid AND g.courseid = :courseid AND g.id = gr.groupid ORDER BY g.id ASC";
 
     $params = array('userid' => $teacher->userid, 'courseid' => $courseid);
 
-    $group = $DB->get_record_sql($sql, $params);
-    if (empty($group)) {
+    $groups = $DB->get_records_sql($sql, $params);
+    if (empty($groups)) {
         echo "ERROR: could not find original group association. It is too dangerous to continue.\n";
         exit;
     }
+
+    $group = current($groups);
 
     echo "Found original group association: {$group->name}\n";
 
@@ -100,9 +102,11 @@ if (empty($course->idnumber)) {
 
         $teachers = $section->teachers();
 
-        if (in_array($teacher->userid, array_keys($teachers))) {
-            $idnumber = $section->idnumber;
-            break;
+        foreach ($teachers as $teach) {
+            if ($teacher->userid == $teach->userid) {
+                $idnumber = $section->idnumber;
+                break 2;
+            }
         }
     }
 
