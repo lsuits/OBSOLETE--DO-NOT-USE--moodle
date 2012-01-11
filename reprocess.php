@@ -22,13 +22,12 @@ $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
 
 header("Content-Type: text/plain");
 
-$nonprimary_roleid = get_config('enrol_ues', 'teacher_role');
-
 if (empty($course->idnumber)) {
     echo "{$course->fullname} has lost its idnumber association...\n";
     echo "Trying to find one based on instructor on record...\n";
 
     $primary_roleid = get_config('enrol_ues', 'editingteacher_role');
+    $nonprimary_roleid = get_config('enrol_ues', 'teacher_role');
 
     $context = get_context_instance(CONTEXT_COURSE, $course->id);
     $role = $DB->get_record('role', array('id' => $primary_roleid));
@@ -39,16 +38,16 @@ if (empty($course->idnumber)) {
         echo "No primaries enrolled... Attempting to find non-primaries\n";
         $role = $DB->get_record('role', array('id' => $nonprimary_roleid));
 
-	$nonprimarys = get_users_from_role_on_context($role, $context);
+        $nonprimarys = get_users_from_role_on_context($role, $context);
 
         if (empty($nonprimarys)) {
-	    echo "ERROR: could not find an instructor on record";
-	    exit;
-	}
+            echo "ERROR: could not find an instructor on record";
+            exit;
+        }
 
-	$teacher = current($nonprimarys);
+        $teacher = current($nonprimarys);
     } else {
-	$teacher = current($primarys);
+        $teacher = current($primarys);
     }
 
     $fullname = fullname($teacher);
@@ -60,8 +59,8 @@ if (empty($course->idnumber)) {
 
     $group = $DB->get_record_sql($sql, $params);
     if (empty($group)) {
-	echo "ERROR: could not find original group association. It is too dangerous to continue.\n";
-	exit;
+        echo "ERROR: could not find original group association. It is too dangerous to continue.\n";
+        exit;
     }
 
     echo "Found original group association: {$group->name}\n";
@@ -75,9 +74,9 @@ if (empty($course->idnumber)) {
     $names = explode(' ', $course->shortname);
 
     if (preg_match('/\(\w\)/', $names[2], $matches)) {
-	$session = $matches[1];
+        $session = $matches[1];
     } else {
-	$session = '';
+        $session = '';
     }
 
     $session = empty($names[2]) ? '' : 
@@ -85,10 +84,10 @@ if (empty($course->idnumber)) {
     $campus = $ues_course->department == 'LAW' ? 'LAW' : 'LSU';
 
     $ues_semester = ues_semester::get(array(
-	'year' => $names[0],
-	'name' => $names[1],
-	'campus' => $campus,
-	'session_key' => $session
+        'year' => $names[0],
+        'name' => $names[1],
+        'campus' => $campus,
+        'session_key' => $session
     ));
 
     $sections = $ues_course->sections($ues_semester);
@@ -96,21 +95,21 @@ if (empty($course->idnumber)) {
     echo "Found " . count($sections) . " associated with this course and semester\n";
 
     foreach ($sections as $section) {
-	if ($section->status == ues::PENDING or $section->status == ues::SKIPPED) {
-	    continue;
-	}
+        if ($section->status == ues::PENDING or $section->status == ues::SKIPPED) {
+            continue;
+        }
 
-	$teachers = $section->teachers();
+        $teachers = $section->teachers();
 
-	if (in_array($teacher->id, array_keys($teachers))) {
-	    $idnumber = $section->idnumber;
-	    break;
-	}
+        if (in_array($teacher->id, array_keys($teachers))) {
+            $idnumber = $section->idnumber;
+            break;
+        }
     }
 
     if (empty($idnumber)) {
-	echo "ERROR: could not find an idnumber in the database. It needs to be rebuilt from the webservice\n";
-	exit;
+        echo "ERROR: could not find an idnumber in the database. It needs to be rebuilt from the webservice\n";
+        exit;
     }
 
     echo "Found idnumber: {$idnumber}\n";
