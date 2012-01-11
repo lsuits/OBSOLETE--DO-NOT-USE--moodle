@@ -50,12 +50,11 @@ if (empty($course->idnumber)) {
         $teacher = current($primarys);
     }
 
-    $fullname = fullname($teacher);
-    echo "Found an instructor on record: {$fullname}\n";
+    echo "Found an instructor on record with id: {$teacher->userid}\n";
 
     $sql = "SELECT g.* FROM {groups} g, {group_members} gr WHERE gr = :userid AND g.courseid = :courseid AND g.id = gr.groupid ORDER BY g.id ASC";
 
-    $params = array('userid' => $teacher->id, 'courseid' => $courseid);
+    $params = array('userid' => $teacher->userid, 'courseid' => $courseid);
 
     $group = $DB->get_record_sql($sql, $params);
     if (empty($group)) {
@@ -101,14 +100,14 @@ if (empty($course->idnumber)) {
 
         $teachers = $section->teachers();
 
-        if (in_array($teacher->id, array_keys($teachers))) {
+        if (in_array($teacher->userid, array_keys($teachers))) {
             $idnumber = $section->idnumber;
             break;
         }
     }
 
     if (empty($idnumber)) {
-        echo "ERROR: could not find an idnumber in the database. It needs to be rebuilt from the webservice\n";
+        echo "ERROR: could not find an idnumber in the database. It needs to be rebuilt from the webservice.\n";
         exit;
     }
 
