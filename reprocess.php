@@ -52,7 +52,7 @@ if (empty($course->idnumber)) {
 
     echo "Found an instructor on record with id: {$teacher->userid}\n";
 
-    $sql = "SELECT g.* FROM {groups} g, {group_members} gr WHERE gr.userid = :userid AND g.courseid = :courseid AND g.id = gr.groupid ORDER BY g.id ASC";
+    $sql = "SELECT g.* FROM {groups} g, {groups_members} gr WHERE gr.userid = :userid AND g.courseid = :courseid AND g.id = gr.groupid";
 
     $params = array('userid' => $teacher->userid, 'courseid' => $courseid);
 
