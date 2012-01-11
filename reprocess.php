@@ -22,12 +22,13 @@ $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
 
 header("Content-Type: text/plain");
 
+$nonprimary_roleid = get_config('enrol_ues', 'teacher_role');
+
 if (empty($course->idnumber)) {
     echo "{$course->fullname} has lost its idnumber association...\n";
     echo "Trying to find one based on instructor on record...\n";
 
     $primary_roleid = get_config('enrol_ues', 'editingteacher_role');
-    $nonprimary_roleid = get_config('enrol_ues', 'teacher_role');
 
     $context = get_context_instance(CONTEXT_COURSE, $course->id);
     $role = $DB->get_record('role', array('id' => $primary_roleid));
