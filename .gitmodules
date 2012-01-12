@@ -43,3 +43,6 @@
 [submodule "blocks/ues_logs"]
 	path = blocks/ues_logs
 	url = git@github.com:lsuits/ues_logs.git
+[submodule "lib/quick_template"]
+	path = lib/quick_template
+	url = git@github.com:lsuits/quick_template.git
