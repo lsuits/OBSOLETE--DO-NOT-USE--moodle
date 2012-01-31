@@ -1230,7 +1230,11 @@ function forum_print_overview($courses,&$htmlarray) {
     foreach ($courses as $course) {
         $sql .= '(l.course = ? AND l.time > ?) OR ';
         $params[] = $course->id;
-        $params[] = $course->lastaccess;
+        if (!empty($course->lastaccess)) {
+            $params[] = $course->lastaccess;
+        }
+        else { $params[] = '';
+        }
     }
     $sql = substr($sql,0,-3); // take off the last OR
 
