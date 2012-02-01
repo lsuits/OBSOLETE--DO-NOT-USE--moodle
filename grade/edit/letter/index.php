@@ -77,19 +77,21 @@ $pagename  = get_string('letters', 'grades');
 $letters = grade_get_letters($context);
 $num = count($letters) + 3;
 
+$custom = (bool) get_config('moodle', 'grade_letters_custom');
+$decimals = $custom ? (int) get_config('moodle', 'grade_letters_decimals') : 2;
+
 //if were viewing the letters
 if (!$edit) {
 
     $data = array();
-
     $max = 100;
     foreach($letters as $boundary=>$letter) {
         $line = array();
-        $line[] = format_float($max,5).' %';
-        $line[] = format_float($boundary,5).' %';
+        $line[] = format_float($max, $decimals).' %';
+        $line[] = format_float($boundary, $decimals).' %';
         $line[] = format_string($letter);
         $data[] = $line;
-        $max = $boundary - 0.00001;
+        $max = $boundary - (1 / pow(10, $decimals));
     }
 
     print_grade_page_head($COURSE->id, 'letter', 'view', get_string('gradeletters', 'grades'));
@@ -120,7 +122,7 @@ if (!$edit) {
         $gradeboundaryname = 'gradeboundary'.$i;
 
         $data->$gradelettername   = $letter;
-        $data->$gradeboundaryname = $boundary;
+        $data->$gradeboundaryname = $custom ? format_float($boundary, $decimals) : (int) $boundary;
         $i++;
     }
     $data->override = $DB->record_exists('grade_letters', array('contextid' => $context->id));
@@ -147,7 +149,8 @@ if (!$edit) {
                 if ($letter == '') {
                     continue;
                 }
-                $letters["{$data->$gradeboundaryname}"] = $letter;
+                $stored = $custom ? "{$data->$gradeboundaryname}" : $data->$gradeboundaryname;
+                $letters[$stored] = $letter;
             }
         }
         krsort($letters, SORT_NUMERIC);
