@@ -46,3 +46,9 @@
 [submodule "lib/quick_template"]
 	path = lib/quick_template
 	url = git@github.com:lsuits/quick_template.git
+[submodule "blocks/ues_reprocess"]
+	path = blocks/ues_reprocess
+	url = git@github.com:lsuits/ues_reprocess.git
+[submodule "blocks/ues_meta_viewer"]
+	path = blocks/ues_meta_viewer
+	url = git@github.com:lsuits/ues_meta_viewer.git
