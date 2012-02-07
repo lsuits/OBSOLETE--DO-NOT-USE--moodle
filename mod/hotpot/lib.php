@@ -91,6 +91,9 @@ function hotpot_add_instance(stdclass $data, $mform) {
     // insert the new record so we get the id
     $data->id = $DB->insert_record('hotpot', $data);
 
+    // update calendar events
+    hotpot_update_events_wrapper($data);
+
     // update gradebook item
     hotpot_grade_item_update($data);
 
@@ -112,6 +115,9 @@ function hotpot_update_instance(stdclass $data, $mform) {
 
     $data->id = $data->instance;
     $DB->update_record('hotpot', $data);
+
+    // update calendar events
+    hotpot_update_events_wrapper($data);
 
     // update gradebook item
     if ($data->grademethod==$mform->get_original_value('grademethod', 0)) {
@@ -1270,7 +1276,7 @@ function hotpot_reset_userdata($data) {
 function hotpot_refresh_events($courseid=0) {
     global $CFG, $DB;
 
-    if ($courseid) {
+    if ($courseid && is_numeric($courseid)) {
         $params = array('course'=>$courseid);
     } else {
         $params = array();
@@ -1280,7 +1286,7 @@ function hotpot_refresh_events($courseid=0) {
     }
 
     // get previous ids for events for these hotpots
-    list($filter, $params) = $DB->get_in_or_equals(array_keys($hotpots));
+    list($filter, $params) = $DB->get_in_or_equal(array_keys($hotpots));
     if ($eventids = $DB->get_records_select('event', "modulename='hotpot' AND instance $filter", $params, 'id', 'id, id AS eventid')) {
         $eventids = array_keys($eventids);
     } else {
@@ -1304,6 +1310,23 @@ function hotpot_refresh_events($courseid=0) {
 }
 
 /**
+ * Update calendar events for a single HotPot activity
+ * This function is intended to be called just after
+ * a HotPot activity has been created or edited.
+ *
+ * @param xxx $hotpot
+ */
+function hotpot_update_events_wrapper($hotpot) {
+    global $DB;
+    if ($eventids = $DB->get_records('event', array('modulename'=>'hotpot', 'instance'=>$hotpot->id), 'id', 'id, id AS eventid')) {
+        $eventids = array_keys($eventids);
+    } else {
+        $eventids = array();
+    }
+    hotpot_update_events($hotpot, $eventids, true);
+}
+
+/**
  * hotpot_update_events
  *
  * @param xxx $hotpot (passed by reference)
@@ -1312,6 +1335,7 @@ function hotpot_refresh_events($courseid=0) {
  */
 function hotpot_update_events(&$hotpot, &$eventids, $delete) {
     global $CFG, $DB;
+    require_once($CFG->dirroot.'/calendar/lib.php');
 
     static $stropens = '';
     static $strcloses = '';
@@ -1327,8 +1351,8 @@ function hotpot_update_events(&$hotpot, &$eventids, $delete) {
         // set $maxduration (secs) from $maxeventlength (days)
         $maxduration = $maxeventlength * 24 * 60 * 60;
 
-        $stropens = get_string('hotpotopens', 'hotpot');
-        $strcloses = get_string('hotpotcloses', 'hotpot');
+        $stropens = get_string('activityopens', 'hotpot');
+        $strcloses = get_string('activitycloses', 'hotpot');
     }
 
     // array to hold events for this hotpot
@@ -1357,8 +1381,21 @@ function hotpot_update_events(&$hotpot, &$eventids, $delete) {
         );
     } else if ($duration) {
         // short duration, just a single event
+        if ($duration < DAYSECS) {
+            // less than a day (1:07 p.m.)
+            $fmt = get_string('strftimetime');
+        } else if ($duration < WEEKSECS) {
+            // less than a week (Thu, 13:07)
+            $fmt = get_string('strftimedaytime');
+        } else if ($duration < YEARSECS) {
+            // more than a week (2 Feb, 13:07)
+            $fmt = get_string('strftimerecent');
+        } else {
+            // more than a year (Thu, 2 Feb 2012, 01:07 pm)
+            $fmt = get_string('strftimerecentfull');
+        }
         $events[] = (object)array(
-            'name' => $hotpot->name,
+            'name' => $hotpot->name.' ('.userdate($hotpot->timeopen, $fmt).' - '.userdate($hotpot->timeclose, $fmt).')',
             'eventtype' => 'open',
             'timestart' => $hotpot->timeopen,
             'timeduration' => $duration,

@@ -26,7 +26,9 @@ $string['hotpot:view'] = 'View the entry page of a HotPot activity';
 
 // more strings
 $string['abandoned'] = 'Abandoned';
+$string['activitycloses'] = 'Activity closes';
 $string['activitygrade'] = 'Activity grade';
+$string['activityopens'] = 'Activity opens';
 $string['added'] = 'Added';
 $string['addquizchain'] = 'Add quiz chain';
 $string['addquizchain_help'] = 'Should all the quizzes in a quiz chain be added?
@@ -369,6 +371,7 @@ $string['outputformat_hp_6_jcloze_xml_findit_b'] = 'FindIt (b) from HP6 JCloze x
 $string['outputformat_hp_6_jcloze_xml_jgloss'] = 'JGloss from HP6 JCloze xml';
 $string['outputformat_hp_6_jcloze_xml_v6'] = 'JCloze (v6) from HP6 xml';
 $string['outputformat_hp_6_jcloze_xml_v6_autoadvance'] = 'JCloze (v6) from HP6 xml (Auto-advance)';
+$string['outputformat_hp_6_jcross_html'] = 'JCross (v6) from html';
 $string['outputformat_hp_6_jcross_xml_v6'] = 'JCross (v6) from xml';
 $string['outputformat_hp_6_jmatch_html'] = 'JMatch (v6) from html';
 $string['outputformat_hp_6_jmatch_xml_flashcard'] = 'JMatch (flashcard) from xml';
@@ -380,7 +383,7 @@ $string['outputformat_hp_6_jmix_xml_v6'] = 'JMix (v6) from xml';
 $string['outputformat_hp_6_jmix_xml_v6_plus'] = 'JMix (v6+) from xml';
 $string['outputformat_hp_6_jmix_xml_v6_plus_keypress'] = 'JMix (v6+ with key press) from xml';
 $string['outputformat_hp_6_jmix_xml_v6_plus_deluxe'] = 'JMix (v6+ with prefix, suffix with distractors) from xml';
-$string['outputformat_hp_6_jmix_html'] = 'JQuiz (v6) from html';
+$string['outputformat_hp_6_jquiz_html'] = 'JQuiz (v6) from html';
 $string['outputformat_hp_6_jquiz_xml_v6'] = 'JQuiz (v6) from xml';
 $string['outputformat_hp_6_jquiz_xml_v6_autoadvance'] = 'JQuiz (v6) from xml (Auto-advance)';
 $string['outputformat_hp_6_jquiz_xml_v6_exam'] = 'JQuiz (v6) from xml (Exam)';
