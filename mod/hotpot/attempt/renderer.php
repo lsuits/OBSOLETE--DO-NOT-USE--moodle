@@ -773,6 +773,8 @@ class mod_hotpot_attempt_renderer extends mod_hotpot_renderer {
      * @return xxx
      */
     function get_title()  {
+        $format_string = false;
+
         switch ($this->hotpot->title & hotpot::TITLE_SOURCE) {
             case hotpot::TEXTSOURCE_FILE:
                 $title = $this->hotpot->source->get_title();
@@ -786,17 +788,20 @@ class mod_hotpot_attempt_renderer extends mod_hotpot_renderer {
             case hotpot::TEXTSOURCE_SPECIFIC:
             default:
                 $title = $this->hotpot->name;
+                $title = format_string($title); // this will strip tags
         }
+
         if ($this->hotpot->title & hotpot::TITLE_UNITNAME) {
             $title = $this->hotpot->name.': '.$title;
         }
         if ($this->hotpot->title & hotpot::TITLE_SORTORDER) {
             $title .= ' ('.$this->sortorder.')';
         }
+
         $textlib = textlib_get_instance();
         $title = $textlib->utf8_to_entities($title);
 
-        return format_string($title);
+        return $title;
     }
 
     /////////////////////////////////////////////////////////////////////
@@ -1217,7 +1222,7 @@ class mod_hotpot_attempt_renderer extends mod_hotpot_renderer {
         // replace relative URLs in attributes of certain HTML tags
         foreach ($tags as $tag=>$attribute) {
             if ($tag=='param') {
-                $url = '\S+?\.\S+?'; // must include a filename and have no spaces
+                $url = '[^ =]+?\.[^ ]+?'; // must include a filename and have no spaces
             } else {
                 $url = '.*?';
             }

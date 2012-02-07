@@ -644,10 +644,16 @@ function xmldb_hotpot_upgrade($oldversion) {
         upgrade_mod_savepoint(true, "$newversion", 'hotpot');
     }
 
-    $newversion = 2010080328;
+    $newversion = 2010080329;
     if ($oldversion < $newversion) {
         $empty_cache = true;
         upgrade_mod_savepoint(true, "$newversion", 'hotpot');
+    }
+
+    $newversion = 2010080330;
+    if ($oldversion < $newversion) {
+        require_once($CFG->dirroot.'/mod/hotpot/lib.php');
+        hotpot_refresh_events();
     }
 
     if ($empty_cache) {
