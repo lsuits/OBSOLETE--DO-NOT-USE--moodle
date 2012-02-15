@@ -55,3 +55,6 @@
 [submodule "grade/import/smart"]
 	path = grade/import/smart
 	url = git@github.com:lsuits/smart-importer.git
+[submodule "grade/import/pearson"]
+	path = grade/import/pearson
+	url = git@github.com:lsuits/pearson.git
