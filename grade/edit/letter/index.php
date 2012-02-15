@@ -45,6 +45,9 @@ if (!$edit) {
     require_capability('moodle/grade:manageletters', $context);
 }
 
+$custom = (bool) get_config('moodle', 'grade_letters_custom');
+$decimals = $custom ? (int) get_config('moodle', 'grade_decimalpoints') : 2;
+
 $returnurl = null;
 $editparam = null;
 if ($context->contextlevel == CONTEXT_SYSTEM or $context->contextlevel == CONTEXT_COURSECAT) {
@@ -66,6 +69,12 @@ if ($context->contextlevel == CONTEXT_SYSTEM or $context->contextlevel == CONTEX
     $returnurl = $CFG->wwwroot.'/grade/edit/letter/index.php?id='.$context->id;
     $editparam = '&edit=1';
 
+    if ($custom) {
+        $item = grade_item::fetch(array('itemtype' => 'course', 'courseid' => $course->id));
+
+        $decimals = $item ? $item->get_decimals() : $decimals;
+    }
+
     $gpr = new grade_plugin_return(array('type'=>'edit', 'plugin'=>'letter', 'courseid'=>$course->id));
 } else {
     print_error('invalidcourselevel');
@@ -81,15 +90,14 @@ $num = count($letters) + 3;
 if (!$edit) {
 
     $data = array();
-
     $max = 100;
     foreach($letters as $boundary=>$letter) {
         $line = array();
-        $line[] = format_float($max,2).' %';
-        $line[] = format_float($boundary,2).' %';
+        $line[] = format_float($max, $decimals).' %';
+        $line[] = format_float($boundary, $decimals).' %';
         $line[] = format_string($letter);
         $data[] = $line;
-        $max = $boundary - 0.01;
+        $max = $boundary - (1 / pow(10, $decimals));
     }
 
     print_grade_page_head($COURSE->id, 'letter', 'view', get_string('gradeletters', 'grades'));
@@ -100,9 +108,9 @@ if (!$edit) {
 
     $table = new html_table();
     $table->head  = array(get_string('max', 'grades'), get_string('min', 'grades'), get_string('letter', 'grades'));
-    $table->size  = array('30%', '30%', '40%');
+    $table->size  = array('33%', '33%', '34%');
     $table->align = array('left', 'left', 'left');
-    $table->width = '30%';
+    $table->width = '40%';
     $table->data  = $data;
     $table->tablealign  = 'center';
     echo html_writer::table($table);
@@ -120,7 +128,7 @@ if (!$edit) {
         $gradeboundaryname = 'gradeboundary'.$i;
 
         $data->$gradelettername   = $letter;
-        $data->$gradeboundaryname = $boundary;
+        $data->$gradeboundaryname = $custom ? format_float($boundary, $decimals) : (int) $boundary;
         $i++;
     }
     $data->override = $DB->record_exists('grade_letters', array('contextid' => $context->id));
@@ -147,7 +155,8 @@ if (!$edit) {
                 if ($letter == '') {
                     continue;
                 }
-                $letters[$data->$gradeboundaryname] = $letter;
+                $stored = $custom ? "{$data->$gradeboundaryname}" : $data->$gradeboundaryname;
+                $letters[$stored] = $letter;
             }
         }
         krsort($letters, SORT_NUMERIC);
