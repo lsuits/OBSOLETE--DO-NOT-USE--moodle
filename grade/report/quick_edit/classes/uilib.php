@@ -216,9 +216,11 @@ class quick_edit_finalgrade_ui extends quick_edit_grade_attribute_format impleme
     var $name = 'finalgrade';
 
     function get_value() {
-        return $this->grade->finalgrade ?
-            format_float($this->grade->finalgrade, $this->grade->grade_item->get_decimals()) :
-            '';
+        // Manual item raw grade support
+        $val = $this->grade->grade_item->is_manual_item() ?
+            $this->grade->rawgrade : $this->grade->finalgrade;
+
+        return $val ? format_float($val, $this->grade->grade_item->get_decimals()) : '';
     }
 
     function is_disabled() {
