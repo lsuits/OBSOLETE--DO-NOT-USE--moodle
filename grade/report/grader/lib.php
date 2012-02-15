@@ -614,11 +614,23 @@ class grade_report_grader extends grade_report {
 
         $rowclasses = array('even', 'odd');
 
+        $repeat = $this->get_pref('repeatheaders');
+
+        // Repeat filler
+        $repeatentries = unserialize(serialize($rows));
+
         $suspendedstring = null;
         foreach ($this->users as $userid => $user) {
+            if ($this->rowcount > 0 and $this->rowcount % $repeat == 0) {
+                $rows = array_merge($rows, $repeatentries);
+            }
+
+            $this->rowcount++;
+
             $userrow = new html_table_row();
+
             $userrow->id = 'fixed_user_'.$userid;
-            $userrow->attributes['class'] = 'r'.$this->rowcount++.' '.$rowclasses[$this->rowcount % 2];
+            $userrow->attributes['class'] = $rowclasses[$this->rowcount % 2];
 
             $usercell = new html_table_cell();
             $usercell->attributes['class'] = 'user';
@@ -711,6 +723,7 @@ class grade_report_grader extends grade_report {
             $headingrow->attributes['class'] = 'heading_name_row';
 
             foreach ($row as $columnkey => $element) {
+
                 $sortlink = clone($this->baseurl);
                 if (isset($element['object']->id)) {
                     $sortlink->param('sortitemid', $element['object']->id);
@@ -822,7 +835,16 @@ class grade_report_grader extends grade_report {
 
         $rowclasses = array('even', 'odd');
 
+        $repeat = $this->get_pref('repeatheaders');
+
+        // Headers to repeat
+        $repeatentries = unserialize(serialize($rows));
+
         foreach ($this->users as $userid => $user) {
+
+            if ($this->rowcount > 0 and $this->rowcount % $repeat == 0) {
+                $rows = array_merge($rows, $repeatentries);
+            }
 
             if ($this->canviewhidden) {
                 $altered = array();
@@ -835,6 +857,7 @@ class grade_report_grader extends grade_report {
             }
 
 
+            $this->rowcount++;
             $itemrow = new html_table_row();
             $itemrow->id = 'user_'.$userid;
             $itemrow->attributes['class'] = $rowclasses[$this->rowcount % 2];
@@ -1064,7 +1087,6 @@ class grade_report_grader extends grade_report {
         $rightrows = $this->get_right_rows();
 
         $html = '';
-
 
         if ($fixedstudents) {
             $fixedcolumntable = new html_table();
