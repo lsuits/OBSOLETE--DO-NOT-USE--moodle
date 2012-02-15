@@ -52,3 +52,6 @@
 [submodule "blocks/ues_meta_viewer"]
 	path = blocks/ues_meta_viewer
 	url = git@github.com:lsuits/ues_meta_viewer.git
+[submodule "grade/import/smart"]
+	path = grade/import/smart
+	url = git@github.com:lsuits/smart-importer.git
