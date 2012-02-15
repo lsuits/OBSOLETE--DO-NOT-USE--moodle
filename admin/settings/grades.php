@@ -89,6 +89,9 @@ if (has_capability('moodle/grade:manage', $systemcontext)
         $defaults = array('value'=>GRADE_AGGREGATE_WEIGHTED_MEAN2, 'forced'=>false, 'adv'=>false);
         $temp->add(new admin_setting_gradecat_combo('grade_aggregation', get_string('aggregation', 'grades'), get_string('aggregation_help', 'grades'), $defaults, $options));
 
+        // SWM Extra Credit handling
+        $temp->add(new admin_setting_configcheckbox('grade_swm_extra_credit', get_string('swm_ec', 'grades'), get_string('swm_ec_help', 'grades'), '1'));
+
         $temp->add(new admin_setting_configmultiselect('grade_aggregations_visible', get_string('aggregationsvisible', 'grades'),
                                                        get_string('aggregationsvisiblehelp', 'grades'), $defaultvisible, $options));
 
