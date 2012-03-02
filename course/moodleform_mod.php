@@ -753,6 +753,8 @@ abstract class moodleform_mod extends moodleform {
 
         $mform->addElement('editor', 'introeditor', $label, null, array('maxfiles'=>EDITOR_UNLIMITED_FILES, 'noclean'=>true, 'context'=>$this->context));
         $mform->setType('introeditor', PARAM_RAW); // no XSS prevention here, users must be trusted
+
+        $required = false;
         if ($required) {
             $mform->addRule('introeditor', get_string('required'), 'required', null, 'client');
         }
