@@ -177,8 +177,33 @@ if (has_capability('moodle/grade:manage', $systemcontext)
         $outcomes = new admin_externalpage('outcomes', get_string('outcomes', 'grades'), $CFG->wwwroot.'/grade/edit/outcome/index.php', 'moodle/grade:manage');
         $ADMIN->add('grades', $outcomes);
     }
-    $letters = new admin_externalpage('letters', get_string('letters', 'grades'), $CFG->wwwroot.'/grade/edit/letter/index.php', 'moodle/grade:manageletters');
+
+    $letters_str = get_string('letters', 'grades');
+    $letters_base = $CFG->wwwroot.'/grade/edit/letter';
+    $letters = new admin_externalpage('letters', $letters_str, $letters_base . '/index.php', 'moodle/grade:manageletters');
     $ADMIN->add('grades', $letters);
+
+    $letters_settings_str = get_string('letter', 'grades') . ' ' . get_string('edit') . ' ' . get_string('settings');
+    $temp = new admin_settingpage('letterssettings', $letters_settings_str, 'moodle/grade:manageletters');
+    if ($ADMIN->fulltree) {
+        $temp->add(new admin_setting_configcheckbox('grade_letters_custom',
+            get_string('letterscustompercents', 'grades'), get_string('letterscustompercents_help', 'grades'), 0));
+
+
+        $temp->add(new admin_setting_configcheckbox('grade_letters_strict',
+            get_string('lettersstrictletter', 'grades'), get_string('lettersstrictletter_help', 'grades'), 0));
+
+        $params = array('courseid' => 0);
+
+        $db_scales = $DB->get_records_menu('scale', $params, '', 'id, name');
+
+        $scales = array(0 => get_string('lettersdefaultletters', 'grades')) + $db_scales;
+
+        $temp->add(new admin_setting_configselect('grade_letters_names',
+            get_string('lettersnames', 'grades'),
+            get_string('lettersname_help', 'grades'), 0, $scales));
+    }
+    $ADMIN->add('grades', $temp);
 
     // The plugins must implement a settings.php file that adds their admin settings to the $settings object
 
