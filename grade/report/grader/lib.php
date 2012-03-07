@@ -147,6 +147,8 @@ class grade_report_grader extends grade_report {
         $this->setup_groups();
 
         $this->setup_sortitemid();
+
+        $this->overridecat = (bool)get_config('moodle', 'grade_overridecat');
     }
 
     /**
@@ -815,7 +817,22 @@ class grade_report_grader extends grade_report {
                         $arrow = $this->get_sort_arrow('move', $sortlink);
                     }
 
-                    if ($this->get_pref('integrate_quick_edit')) {
+                    $is_category_item = (
+                        $element['object']->itemtype == 'course' or
+                        $element['object']->itemtype == 'category'
+                    );
+
+                    $can_category_quick_edit = (
+                        $is_category_item and
+                        !empty($this->overridecat)
+                    );
+
+                    $can_quick_edit = (
+                        $this->get_pref('integrate_quick_edit') and
+                        (!$is_category_item or $can_category_quick_edit)
+                    );
+
+                    if ($can_quick_edit) {
                         $url = new moodle_url('/grade/report/quick_edit/index.php', array(
                             'id' => $this->course->id,
                             'item' => 'grade',
@@ -844,7 +861,7 @@ class grade_report_grader extends grade_report {
 
                     $itemcell->colspan = $colspan;
                     $itemcell->text = $qe_link;
-                    $itemcell->text .= shorten_text($headerlink) . $arrow;
+                    $itemcell->text .= shorten_text($headerlink);
                     $itemcell->text .= $percents . $arrow;
                     $itemcell->header = true;
                     $itemcell->scope = 'col';
@@ -1525,15 +1542,17 @@ class grade_report_grader extends grade_report {
         // Init all icons
         $editicon = '';
 
+        $editable = true;
+
         if ($element['type'] == 'grade') {
             $item = $element['object']->grade_item;
 
-            $overridable = $item->is_overridable_item();
-        } else {
-            $overridable = true;
+            if ($item->is_course_item() or $item->is_category_item()) {
+                $editable = $this->overridecat;
+            }
         }
 
-        if ($element['type'] != 'categoryitem' && $element['type'] != 'courseitem' &&$overridable) {
+        if ($element['type'] != 'categoryitem' && $element['type'] != 'courseitem' &&$editable) {
             $editicon = $this->gtree->get_edit_icon($element, $this->gpr);
         }
 
@@ -1731,7 +1750,20 @@ class grade_report_grader extends grade_report {
             return '';
         }
 
+        if ($item->is_category_item()) {
+            $parent = $parent->get_parent_category();
+        }
+
         $determine_weight = function($item) use ($parent) {
+            if ($parent->is_extracredit_used()) {
+                $discard_weight = (
+                    ($parent->aggregation != GRADE_AGGREGATE_WEIGHTED_MEAN &&
+                    $item->aggregationcoef > 0) or $item->aggregationcoef < 0
+                );
+
+                if ($discard_weight) return 0;
+            }
+
             switch ($parent->aggregation) {
                 case GRADE_AGGREGATE_WEIGHTED_MEAN:
                     return $item->aggregationcoef;
