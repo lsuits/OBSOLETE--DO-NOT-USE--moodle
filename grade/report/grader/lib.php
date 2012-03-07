@@ -1665,7 +1665,7 @@ class grade_report_grader extends grade_report {
             if ($parent->is_extracredit_used()) {
                 $discard_weight = (
                     ($parent->aggregation != GRADE_AGGREGATE_WEIGHTED_MEAN &&
-                    $item->aggregationcoef > 0) or $item->aggregationcoef > 0
+                    $item->aggregationcoef > 0) or $item->aggregationcoef < 0
                 );
 
                 if ($discard_weight) return 0;
