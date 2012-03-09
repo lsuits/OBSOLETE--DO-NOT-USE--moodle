@@ -58,3 +58,6 @@
 [submodule "grade/import/pearson"]
 	path = grade/import/pearson
 	url = git@github.com:lsuits/pearson.git
+[submodule "blocks/export_forum"]
+	path = blocks/export_forum
+	url = git://github.com/lsuits/export_forum.git
