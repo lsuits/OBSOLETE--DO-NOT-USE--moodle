@@ -1,63 +1,63 @@
 [submodule "theme/lsu"]
 	path = theme/lsu
-	url = git@github.com:lsuits/lsu_theme.git
+	url = git://github.com/lsuits/lsu_theme.git
 [submodule "blocks/quickmail"]
 	path = blocks/quickmail
-	url = git@github.com:lsuits/quickmail.git
+	url = git://github.com/lsuits/quickmail.git
 [submodule "blocks/helpdesk"]
 	path = blocks/helpdesk
-	url = git@github.com:lsuits/helpdesk.git
+	url = git://github.com/lsuits/helpdesk.git
 [submodule "blocks/scantron"]
 	path = blocks/scantron
-	url = git@github.com:lsuits/scantron.git
+	url = git://github.com/lsuits/scantron.git
 [submodule "blocks/my_picture"]
 	path = blocks/my_picture
-	url = git@github.com:lsuits/my_picture.git
+	url = git://github.com/lsuits/my_picture.git
 [submodule "blocks/admin_email"]
 	path = blocks/admin_email
-	url = git@github.com:lsuits/admin_email.git
+	url = git://github.com/lsuits/admin_email.git
 [submodule "blocks/rollsheets"]
 	path = blocks/rollsheets
-	url = git@github.com:lsuits/rollsheets.git
+	url = git://github.com/lsuits/rollsheets.git
 [submodule "blocks/bulk_delete"]
 	path = blocks/bulk_delete
-	url = git@github.com:lsuits/bulk_delete.git
+	url = git://github.com/lsuits/bulk_delete.git
 [submodule "blocks/backadel"]
 	path = blocks/backadel
-	url = git@github.com:lsuits/backadel.git
+	url = git://github.com/lsuits/backadel.git
 [submodule "blocks/simple_restore"]
 	path = blocks/simple_restore
-	url = git@github.com:lsuits/simple_restore.git
+	url = git://github.com/lsuits/simple_restore.git
 [submodule "grade/export/csv"]
 	path = grade/export/csv
-	url = git@github.com:lsuits/csv.git
+	url = git://github.com/lsuits/csv.git
 [submodule "grade/report/grade_breakdown"]
 	path = grade/report/grade_breakdown
-	url = git@github.com:lsuits/grade_breakdown.git
+	url = git://github.com/lsuits/grade_breakdown.git
 [submodule "enrol/ues"]
 	path = enrol/ues
-	url = git@github.com:lsuits/ues.git
+	url = git://github.com/lsuits/ues.git
 [submodule "blocks/cps"]
 	path = blocks/cps
-	url = git@github.com:lsuits/cps.git
+	url = git://github.com/lsuits/cps.git
 [submodule "blocks/ues_logs"]
 	path = blocks/ues_logs
-	url = git@github.com:lsuits/ues_logs.git
+	url = git://github.com/lsuits/ues_logs.git
 [submodule "lib/quick_template"]
 	path = lib/quick_template
-	url = git@github.com:lsuits/quick_template.git
+	url = git://github.com/lsuits/quick_template.git
 [submodule "blocks/ues_reprocess"]
 	path = blocks/ues_reprocess
-	url = git@github.com:lsuits/ues_reprocess.git
+	url = git://github.com/lsuits/ues_reprocess.git
 [submodule "blocks/ues_meta_viewer"]
 	path = blocks/ues_meta_viewer
-	url = git@github.com:lsuits/ues_meta_viewer.git
+	url = git://github.com/lsuits/ues_meta_viewer.git
 [submodule "grade/import/smart"]
 	path = grade/import/smart
-	url = git@github.com:lsuits/smart-importer.git
+	url = git://github.com/lsuits/smart-importer.git
 [submodule "grade/import/pearson"]
 	path = grade/import/pearson
-	url = git@github.com:lsuits/pearson.git
+	url = git://github.com/lsuits/pearson.git
 [submodule "blocks/export_forum"]
 	path = blocks/export_forum
 	url = git://github.com/lsuits/export_forum.git
