@@ -156,11 +156,44 @@ class quick_edit_checkbox_attribute extends quick_edit_ui_element {
     }
 }
 
-abstract class quick_edit_attribute_format {
-    abstract function determine_format();
+class quick_edit_dropdown_attribute extends quick_edit_ui_element {
+    var $selected;
+    var $options;
+    var $is_disabled;
 
-    function __toString() {
-        return $this->determine_format()->html();
+    function __construct($name, $options, $selected = '', $is_disabled = false, $tabindex = null) {
+        $this->selected = $selected;
+        $this->options = $options;
+        $this->tabindex = $tabindex;
+        $this->is_disabled = $is_disabled;
+        parent::__construct($name, $selected);
+    }
+
+    function is_dropdown() {
+        return true;
+    }
+
+    function html() {
+        $old = array(
+            'type' => 'hidden',
+            'name' => 'old' . $this->name,
+            'value' => $this->selected
+        );
+
+        $attributes = array();
+        if (!empty($this->tabindex)) {
+            $attributes['tabindex'] = $this->tabindex;
+        }
+
+        if (!empty($this->is_disabled)) {
+            $attributes['disabled'] = 'DISABLED';
+        }
+
+        $select = html_writer::select(
+            $this->options, $this->name, $this->selected, false, $attributes
+        );
+
+        return ($select . html_writer::empty_tag('input', $old));
     }
 }
 
@@ -211,6 +244,61 @@ interface tabbable {
     function get_tabindex();
 }
 
+class quick_edit_bulk_insert_ui extends quick_edit_ui_element {
+    function __construct($item) {
+        $this->name = 'bulk_' . $item->id;
+        $this->applyname = $this->name_for('apply');
+        $this->selectname = $this->name_for('type');
+        $this->insertname = $this->name_for('value');
+    }
+
+    function is_applied($data) {
+        return isset($data->{$this->applyname});
+    }
+
+    function get_type($data) {
+        return $data->{$this->selectname};
+    }
+
+    function get_insert_value($data) {
+        return $data->{$this->insertname};
+    }
+
+    function html() {
+        $_s = function($key) {
+            return get_string($key, 'gradereport_quick_edit');
+        };
+
+        $apply = html_writer::checkbox($this->applyname, 1, false, ' ' . $_s('bulk'));
+
+        $insert_options = array(
+            'all' => $_s('all_grades'),
+            'blanks' => $_s('blanks')
+        );
+
+        $select = html_writer::select(
+            $insert_options, $this->selectname, 'blanks', false
+        );
+
+        $label = html_writer::tag('label', $_s('for'));
+        $text = new quick_edit_text_attribute($this->insertname, "0");
+
+        return implode(' ', array($apply, $text->html(), $label, $select));
+    }
+
+    private function name_for($extend) {
+        return "{$this->name}_$extend";
+    }
+}
+
+abstract class quick_edit_attribute_format {
+    abstract function determine_format();
+
+    function __toString() {
+        return $this->determine_format()->html();
+    }
+}
+
 class quick_edit_finalgrade_ui extends quick_edit_grade_attribute_format implements unique_value, be_disabled {
 
     var $name = 'finalgrade';
@@ -220,7 +308,11 @@ class quick_edit_finalgrade_ui extends quick_edit_grade_attribute_format impleme
         $val = $this->grade->grade_item->is_manual_item() ?
             $this->grade->rawgrade : $this->grade->finalgrade;
 
-        return $val ? format_float($val, $this->grade->grade_item->get_decimals()) : '';
+        if ($this->grade->grade_item->scaleid) {
+            return $val ? (int)$val : -1;
+        } else {
+            return $val ? format_float($val, $this->grade->grade_item->get_decimals()) : '';
+        }
     }
 
     function is_disabled() {
@@ -231,12 +323,30 @@ class quick_edit_finalgrade_ui extends quick_edit_grade_attribute_format impleme
     }
 
     function determine_format() {
-        return new quick_edit_text_attribute(
-            $this->get_name(),
-            $this->get_value(),
-            $this->is_disabled(),
-            $this->get_tabindex()
-        );
+        if ($this->grade->grade_item->load_scale()) {
+            $scale = $this->grade->grade_item->load_scale();
+
+            $options = array(-1 => get_string('nograde'));
+
+            foreach ($scale->scale_items as $i => $name) {
+                $options[$i + 1] = $name;
+            }
+
+            return new quick_edit_dropdown_attribute(
+                $this->get_name(),
+                $options,
+                $this->get_value(),
+                $this->is_disabled(),
+                $this->get_tabindex()
+            );
+        } else {
+            return new quick_edit_text_attribute(
+                $this->get_name(),
+                $this->get_value(),
+                $this->is_disabled(),
+                $this->get_tabindex()
+            );
+        }
     }
 
     function set($value) {

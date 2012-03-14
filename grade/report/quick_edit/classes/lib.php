@@ -151,11 +151,6 @@ abstract class quick_edit_screen {
             $posted = $data->$name;
             $oldvalue = $data->$oldname;
 
-            // Probably not supported
-            if (empty($data->$name) and empty($data->$oldname)) {
-                continue;
-            }
-
             $format = $element->determine_format();
 
             if ($format->is_textbox() and trim($data->$name) === '') {
@@ -198,6 +193,40 @@ abstract class quick_edit_tablelike extends quick_edit_screen implements tabbabl
         return (count($this->definition()) * $this->total) + $this->index;
     }
 
+    // Special injection for bulk operations
+    public function process($data) {
+        $bulk = $this->factory()->create('bulk_insert')->format($this->item);
+
+        // Bulk insert messages the data to be passed in
+        // ie: for all grades of empty grades apply the specified value
+        if ($bulk->is_applied($data)) {
+            $filter = $bulk->get_type($data);
+            $insert_value = $bulk->get_insert_value($data);
+
+            foreach ($data as $varname => $value) {
+                if (!preg_match('/^finalgrade_(\d+)_/', $varname, $matches)) {
+                    continue;
+                }
+
+                $grade_item = grade_item::fetch(array(
+                    'courseid' => $this->courseid,
+                    'id' => $matches[1]
+                ));
+
+                $is_scale = ($grade_item->gradetype == GRADE_TYPE_SCALE);
+
+                $empties = (trim($value) === '' or ($is_scale and $value == -1));
+
+                if ($filter == 'all' or $empties) {
+                    $data->$varname = ($is_scale and empty($insert_value)) ?
+                        -1 : $insert_value;
+                }
+            }
+        }
+
+        parent::process($data);
+    }
+
     public function format_definition($line, $grade) {
         foreach ($this->definition() as $i => $field) {
             // Table tab index
@@ -237,8 +266,16 @@ abstract class quick_edit_tablelike extends quick_edit_screen implements tabbabl
         $buttons = html_writer::tag('div', $button_html, $button_attr);
 
         return html_writer::tag('form',
-            html_writer::table($table) . $buttons,
+            html_writer::table($table) . $this->bulk_insert() . $buttons,
             array('method' => 'POST')
+        );
+    }
+
+    public function bulk_insert() {
+        return html_writer::tag(
+            'div',
+            $this->factory()->create('bulk_insert')->format($this->item)->html(),
+            array('quick_edit_bulk')
         );
     }
 
