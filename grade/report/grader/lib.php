@@ -618,6 +618,7 @@ class grade_report_grader extends grade_report {
 
         // Repeat filler
         $repeatentries = unserialize(serialize($rows));
+        array_shift($repeatentries);
 
         $suspendedstring = null;
         foreach ($this->users as $userid => $user) {
@@ -839,6 +840,7 @@ class grade_report_grader extends grade_report {
 
         // Headers to repeat
         $repeatentries = unserialize(serialize($rows));
+        array_shift($repeatentries);
 
         foreach ($this->users as $userid => $user) {
 
