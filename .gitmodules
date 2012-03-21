@@ -61,3 +61,6 @@
 [submodule "blocks/export_forum"]
 	path = blocks/export_forum
 	url = git://github.com/lsuits/export_forum.git
+[submodule "blocks/grade_notify"]
+	path = blocks/grade_notify
+	url = git://github.com/lsuits/grade_notify.git
