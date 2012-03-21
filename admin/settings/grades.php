@@ -89,10 +89,16 @@ if (has_capability('moodle/grade:manage', $systemcontext)
         $defaults = array('value'=>GRADE_AGGREGATE_WEIGHTED_MEAN2, 'forced'=>false, 'adv'=>false);
         $temp->add(new admin_setting_gradecat_combo('grade_aggregation', get_string('aggregation', 'grades'), get_string('aggregation_help', 'grades'), $defaults, $options));
 
+        // SWM Extra Credit handling
+        $temp->add(new admin_setting_configcheckbox('grade_swm_extra_credit', get_string('swm_ec', 'grades'), get_string('swm_ec_help', 'grades'), '1'));
+
         $temp->add(new admin_setting_configmultiselect('grade_aggregations_visible', get_string('aggregationsvisible', 'grades'),
                                                        get_string('aggregationsvisiblehelp', 'grades'), $defaultvisible, $options));
 
         $options = array(0 => get_string('no'), 1 => get_string('yes'));
+
+        $temp->add(new admin_setting_configcheckbox('grade_overridecat', get_string('overridecat', 'grades'),
+            get_string('overridecat_help', 'grades'), 1));
 
         $defaults = array('value'=>1, 'forced'=>false, 'adv'=>true);
         $temp->add(new admin_setting_gradecat_combo('grade_aggregateonlygraded', get_string('aggregateonlygraded', 'grades'),
@@ -122,6 +128,14 @@ if (has_capability('moodle/grade:manage', $systemcontext)
     /// Grade item settings
     $temp = new admin_settingpage('gradeitemsettings', get_string('gradeitemsettings', 'grades'), 'moodle/grade:manage');
     if ($ADMIN->fulltree) {
+        $temp->add(new admin_setting_configcheckbox('grade_item_manual_recompute',
+            get_string('gradeitemmanualrecompute', 'grades'),
+            get_string('gradeitemmanualrecompute_help', 'grades'), 0));
+
+        $temp->add(new admin_setting_configcheckbox('grade_multfactor_alt',
+            get_string('multfactor_alt', 'grades'),
+            get_string('multfactor_alt_desc', 'grades'), 0));
+
         $temp->add(new admin_setting_configselect('grade_displaytype', get_string('gradedisplaytype', 'grades'),
                                                   get_string('gradedisplaytype_help', 'grades'), GRADE_DISPLAY_TYPE_REAL, $display_types));
 
@@ -153,6 +167,8 @@ if (has_capability('moodle/grade:manage', $systemcontext)
                                                              'locktime' => get_string('locktime', 'grades'),
                                                              'aggregationcoef' => get_string('aggregationcoef', 'grades'),
                                                              'parentcategory' => get_string('parentcategory', 'grades'))));
+
+        $temp->add(new admin_setting_configcheckbox('grade_min_hide', get_string('minimum_hide', 'grades'), get_string('minimum_hide_help', 'grades'), 0));
     }
     $ADMIN->add('grades', $temp);
 
@@ -165,8 +181,33 @@ if (has_capability('moodle/grade:manage', $systemcontext)
         $outcomes = new admin_externalpage('outcomes', get_string('outcomes', 'grades'), $CFG->wwwroot.'/grade/edit/outcome/index.php', 'moodle/grade:manage');
         $ADMIN->add('grades', $outcomes);
     }
-    $letters = new admin_externalpage('letters', get_string('letters', 'grades'), $CFG->wwwroot.'/grade/edit/letter/index.php', 'moodle/grade:manageletters');
+
+    $letters_str = get_string('letters', 'grades');
+    $letters_base = $CFG->wwwroot.'/grade/edit/letter';
+    $letters = new admin_externalpage('letters', $letters_str, $letters_base . '/index.php', 'moodle/grade:manageletters');
     $ADMIN->add('grades', $letters);
+
+    $letters_settings_str = get_string('letter', 'grades') . ' ' . get_string('edit') . ' ' . get_string('settings');
+    $temp = new admin_settingpage('letterssettings', $letters_settings_str, 'moodle/grade:manageletters');
+    if ($ADMIN->fulltree) {
+        $temp->add(new admin_setting_configcheckbox('grade_letters_custom',
+            get_string('letterscustompercents', 'grades'), get_string('letterscustompercents_help', 'grades'), 0));
+
+
+        $temp->add(new admin_setting_configcheckbox('grade_letters_strict',
+            get_string('lettersstrictletter', 'grades'), get_string('lettersstrictletter_help', 'grades'), 0));
+
+        $params = array('courseid' => 0);
+
+        $db_scales = $DB->get_records_menu('scale', $params, '', 'id, name');
+
+        $scales = array(0 => get_string('lettersdefaultletters', 'grades')) + $db_scales;
+
+        $temp->add(new admin_setting_configselect('grade_letters_names',
+            get_string('lettersnames', 'grades'),
+            get_string('lettersname_help', 'grades'), 0, $scales));
+    }
+    $ADMIN->add('grades', $temp);
 
     // The plugins must implement a settings.php file that adds their admin settings to the $settings object
 

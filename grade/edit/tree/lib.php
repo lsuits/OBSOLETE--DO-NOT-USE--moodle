@@ -366,10 +366,16 @@ class grade_edit_tree {
 
         if ((($aggcoef == 'aggregationcoefweight' || $aggcoef == 'aggregationcoef') && $type == 'weight') ||
             ($aggcoef == 'aggregationcoefextraweight' && $type == 'extra')) {
+
+            if ($aggcoef == 'aggregationcoefweight' && $item->aggregationcoef < 0) {
+                return '';
+            }
+
             return '<input type="text" size="6" id="aggregationcoef_'.$item->id.'" name="aggregationcoef_'.$item->id.'"
                 value="'.grade_edit_tree::format_number($item->aggregationcoef).'" />';
-        } elseif ($aggcoef == 'aggregationcoefextrasum' && $type == 'extra') {
-            $checked = ($item->aggregationcoef > 0) ? 'checked="checked"' : '';
+        } elseif (($aggcoef == 'aggregationcoefextrasum' || $aggcoef == 'aggregationcoefweight') && $type == 'extra') {
+            $valid = ($aggcoef != 'aggregationcoefweight' and $item->aggregationcoef > 0);
+            $checked = ($valid or $item->aggregationcoef < 0) ? 'checked="checked"' : '';
             return '<input type="hidden" name="extracredit_'.$item->id.'" value="0" />
                     <input type="checkbox" id="extracredit_'.$item->id.'" name="extracredit_'.$item->id.'" value="1" '."$checked />\n";
         } else {
@@ -471,6 +477,7 @@ class grade_edit_tree {
         if ($element['type'] == 'category') {
             if ($coefstring == 'aggregationcoefweight') {
                 $this->uses_weight = true;
+                $this->uses_extra_credit = true;
             } elseif ($coefstring ==  'aggregationcoefextraweight' || $coefstring == 'aggregationcoefextrasum') {
                 $this->uses_extra_credit = true;
             }
@@ -956,7 +963,13 @@ class grade_edit_tree_column_droplow extends grade_edit_tree_column_category {
     }
 
     public function get_category_cell($category, $levelclass, $params) {
-        $droplow = '<input type="text" size="3" id="droplow_'.$category->id.'" name="droplow_'.$category->id.'" value="'.$category->droplow.'" />';
+        $options = array(0 => get_string('none'));
+
+        for ($i=1; $i<=20; $i++) {
+            $options[$i] = $i;
+        }
+
+        $droplow = html_writer::select($options, 'droplow_'.$category->id, $category->droplow, null);
 
         if ($this->forced) {
             $droplow = $category->droplow;
@@ -989,7 +1002,13 @@ class grade_edit_tree_column_keephigh extends grade_edit_tree_column_category {
     }
 
     public function get_category_cell($category, $levelclass, $params) {
-        $keephigh = '<input type="text" size="3" id="keephigh_'.$category->id.'" name="keephigh_'.$category->id.'" value="'.$category->keephigh.'" />';
+        $options_h = array(0 => get_string('all'));
+
+        for ($i=1; $i<=20; $i++) {
+            $options_h[$i] = $i;
+        }
+
+        $keephigh = html_writer::select($options_h, 'keephigh_'.$category->id, $category->keephigh, null);
 
         if ($this->forced) {
             $keephigh = $category->keephigh;
@@ -1009,15 +1028,20 @@ class grade_edit_tree_column_keephigh extends grade_edit_tree_column_category {
 }
 
 class grade_edit_tree_column_multfactor extends grade_edit_tree_column {
+    private $curve_to;
 
     public function __construct($params) {
+        $this->curve_to = get_config('moodle', 'grade_multfactor_alt');
         parent::__construct();
     }
 
     public function get_header_cell() {
         global $OUTPUT;
         $headercell = clone($this->headercell);
-        $headercell->text = get_string('multfactor', 'grades').$OUTPUT->help_icon('multfactor', 'grades');
+
+        $name = $this->curve_to ? 'multfactor_alt' : 'multfactor';
+
+        $headercell->text = get_string($name, 'grades').$OUTPUT->help_icon($name, 'grades');
         return $headercell;
     }
 
@@ -1037,7 +1061,18 @@ class grade_edit_tree_column_multfactor extends grade_edit_tree_column {
             return $itemcell;
         }
 
-        $multfactor = '<input type="text" size="4" id="multfactor'.$item->id.'" name="multfactor_'.$item->id.'" value="'.grade_edit_tree::format_number($item->multfactor).'" />';
+        $size = 4;
+        $multfactor = $item->multfactor;
+
+        if ($this->curve_to) {
+            $decimals = $item->get_decimals();
+            $size += $decimals;
+            $multfactor = format_float(($multfactor * $item->grademax), $decimals);
+        } else {
+            $multfactor = grade_edit_tree::format_number($multfactor);
+        }
+
+        $multfactor = '<input type="text" size="'.$size.'" id="multfactor'.$item->id.'" name="multfactor_'.$item->id.'" value="'.$multfactor.'" />';
 
         $itemcell->text = $multfactor;
         return $itemcell;
