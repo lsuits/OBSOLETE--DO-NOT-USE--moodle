@@ -140,7 +140,15 @@ class grade_report_grader extends grade_report {
             $this->baseurl->params(array('perpage' => $studentsperpage, 'page' => $this->page));
         }
 
-        $this->pbarurl = new moodle_url('/grade/report/grader/index.php', array('id' => $this->courseid, 'perpage' => $studentsperpage));
+        $this->setup_name_filters();
+
+        // Persist initials through paging
+        $this->pbarurl = new moodle_url('/grade/report/grader/index.php', array(
+            'id' => $this->courseid,
+            'perpage' => $studentsperpage,
+            'silast' => $this->silast,
+            'filast' => $this->filast
+        ));
 
         $this->setup_groups();
 
@@ -372,6 +380,8 @@ class grade_report_grader extends grade_report {
             $params = array_merge($gradebookrolesparams, $this->groupwheresql_params, $enrolledparams);
         }
 
+        $wherenames = $this->name_filters();
+
         $sql = "SELECT $userfields
                   FROM {user} u
                   JOIN ($enrolledsql) je ON je.id = u.id
@@ -384,6 +394,7 @@ class grade_report_grader extends grade_report {
                               AND ra.contextid " . get_related_contexts_string($this->context) . "
                        ) rainner ON rainner.userid = u.id
                    AND u.deleted = 0
+                   $wherenames
                    $this->groupwheresql
               ORDER BY $sort";
 
@@ -1317,6 +1328,7 @@ class grade_report_grader extends grade_report {
         if ($showaverages) {
             $params = array_merge(array('courseid'=>$this->courseid), $gradebookrolesparams, $enrolledparams, $groupwheresqlparams);
 
+            $wherenames = $this->name_filters();
             // find sums of all grade items in course
             $sql = "SELECT g.itemid, SUM(g.finalgrade) AS sum
                       FROM {grade_items} gi
@@ -1333,6 +1345,7 @@ class grade_report_grader extends grade_report {
                      WHERE gi.courseid = :courseid
                        AND u.deleted = 0
                        AND g.finalgrade IS NOT NULL
+                       $wherenames
                        $groupwheresql
                      GROUP BY g.itemid";
             $sumarray = array();
@@ -1358,6 +1371,7 @@ class grade_report_grader extends grade_report {
                            AND ra.roleid $gradebookrolessql
                            AND ra.contextid ".get_related_contexts_string($this->context)."
                            AND u.deleted = 0
+                           $wherenames
                            AND g.id IS NULL
                            $groupwheresql
                   GROUP BY gi.id";
