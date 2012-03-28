@@ -64,3 +64,6 @@
 [submodule "blocks/grade_notify"]
 	path = blocks/grade_notify
 	url = git://github.com/lsuits/grade_notify.git
+[submodule "blocks/ues_people"]
+	path = blocks/ues_people
+	url = git://github.com/lsuits/ues_people.git
