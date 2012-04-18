@@ -73,3 +73,6 @@
 [submodule "mod/forumng"]
 	path = mod/forumng
 	url = git@github.com:lsuits/moodle-mod_forumng.git
+[submodule "grade/report/projected"]
+	path = grade/report/projected
+	url = git@github.com:lsuits/projected-final-grade.git
