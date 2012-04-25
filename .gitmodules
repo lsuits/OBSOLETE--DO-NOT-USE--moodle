@@ -76,3 +76,6 @@
 [submodule "grade/report/projected"]
 	path = grade/report/projected
 	url = git@github.com:lsuits/projected-final-grade.git
+[submodule "grade/report/gradebook_builder"]
+	path = grade/report/gradebook_builder
+	url = git@github.com:lsuits/gradebook_builder.git
