@@ -79,3 +79,6 @@
 [submodule "grade/report/gradebook_builder"]
 	path = grade/report/gradebook_builder
 	url = git@github.com:lsuits/gradebook_builder.git
+[submodule "question/type/oumultiresponse"]
+	path = question/type/oumultiresponse
+	url = git@github.com:lsuits/moodle-qtype_oumultiresponse.git
