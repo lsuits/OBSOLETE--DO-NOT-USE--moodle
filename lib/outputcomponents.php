@@ -285,10 +285,11 @@ class user_picture implements renderable {
         }
 
         $is_self = $USER->id == $this->user->id;
-        $level = empty($this->courseid) ? CONTEXT_SYSTEM : CONTEXT_COURSE;
-        $instanceid = empty($this->courseid) ? 1 : $this->courseid;
 
-        $cc = get_context_instance($level, $instanceid);
+        $cc = $page->course->id == SITEID ?
+            get_context_instance(CONTEXT_SYSTEM) :
+            get_context_instance(CONTEXT_COURSE, $page->course->id);
+
         $can_view_details = has_capability('moodle/user:viewalldetails', $cc);
         $is_teacher = has_capability('moodle/user:viewalldetails', $cc, $this->user->id);
 
