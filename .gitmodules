@@ -82,3 +82,6 @@
 [submodule "question/type/oumultiresponse"]
 	path = question/type/oumultiresponse
 	url = git@github.com:lsuits/moodle-qtype_oumultiresponse.git
+[submodule "local/category_sort"]
+	path = local/category_sort
+	url = git@github.com:lsuits/category_sort.git
