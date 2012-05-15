@@ -85,3 +85,6 @@
 [submodule "local/category_sort"]
 	path = local/category_sort
 	url = git@github.com:lsuits/category_sort.git
+[submodule "blocks/post_grades"]
+	path = blocks/post_grades
+	url = git@github.com:lsuits/post_grades.git
