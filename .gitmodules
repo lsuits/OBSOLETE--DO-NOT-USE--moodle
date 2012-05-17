@@ -88,3 +88,6 @@
 [submodule "blocks/post_grades"]
 	path = blocks/post_grades
 	url = git@github.com:lsuits/post_grades.git
+[submodule "blocks/instructor_profile"]
+	path = blocks/instructor_profile
+	url = git@github.com:lsuits/instructor_profile.git
