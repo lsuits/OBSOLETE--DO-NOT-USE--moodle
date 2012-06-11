@@ -91,3 +91,6 @@
 [submodule "blocks/instructor_profile"]
 	path = blocks/instructor_profile
 	url = git@github.com:lsuits/instructor_profile.git
+[submodule "local/feature_request"]
+	path = local/feature_request
+	url = git@github.com:lsuits/feature_request.git
