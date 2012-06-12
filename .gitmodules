@@ -94,3 +94,6 @@
 [submodule "local/feature_request"]
 	path = local/feature_request
 	url = git@github.com:lsuits/feature_request.git
+[submodule "blocks/grades_at_a_glance"]
+	path = blocks/grades_at_a_glance
+	url = git@github.com:lsuits/grades_at_a_glance.git
