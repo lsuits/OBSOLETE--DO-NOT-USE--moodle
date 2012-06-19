@@ -97,3 +97,6 @@
 [submodule "blocks/grades_at_a_glance"]
 	path = blocks/grades_at_a_glance
 	url = git@github.com:lsuits/grades_at_a_glance.git
+[submodule "blocks/student_gradeviewer"]
+	path = blocks/student_gradeviewer
+	url = https://github.com/lsuits/student_gradeviewer.git
