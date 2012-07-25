@@ -139,6 +139,8 @@ $numusers = $report->get_numusers();
 $report->load_final_grades();
 
 echo $report->group_selector;
+echo $report->get_first_initial_bar();
+echo $report->get_last_initial_bar();
 echo '<div class="clearer"></div>';
 // echo $report->get_toggles_html();
 
@@ -159,6 +161,7 @@ $reporthtml = $report->get_grade_table();
 if ($USER->gradeediting[$course->id] && ($report->get_pref('showquickfeedback') || $report->get_pref('quickgrading'))) {
     echo '<form action="index.php" method="post">';
     echo '<div>';
+    echo '<div class="submit"><input type="submit" value="'.s(get_string('update')).'" /></div>';
     echo '<input type="hidden" value="'.s($courseid).'" name="id" />';
     echo '<input type="hidden" value="'.sesskey().'" name="sesskey" />';
     echo '<input type="hidden" value="grader" name="report"/>';
