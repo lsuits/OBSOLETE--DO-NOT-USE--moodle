@@ -242,6 +242,15 @@ if ($currentuser
     print_row(get_string("email").":", obfuscate_mailto($user->email, ''));
 }
 
+// Show the user's web page if set
+if ($user->url && !isset($hiddenfields['webpage'])) {
+    $url = $user->url;
+    if (strpos($user->url, '://') === false) {
+        $url = 'http://'. $url;
+    }
+    print_row(get_string("webpage") .":", '<a href="'.s($url).'">'.s($user->url).'</a>');
+}
+
 // Show last time this user accessed this course
 if (!isset($hiddenfields['lastaccess'])) {
     if ($lastaccess = $DB->get_record('user_lastaccess', array('userid'=>$user->id, 'courseid'=>$course->id))) {
@@ -282,8 +291,11 @@ if (!isset($hiddenfields['groups'])) {
 }
 
 // Show other courses they may be in
+$has_permission = has_capability('moodle/course:create', $systemcontext) ||
+                  has_capability('block/helpdesk:viewenrollments', $systemcontext);
+
 if (!isset($hiddenfields['mycourses'])) {
-    if ($mycourses = enrol_get_all_users_courses($user->id, true, NULL, 'visible DESC,sortorder ASC')) {
+    if (($mycourses = enrol_get_users_courses($user->id, true, NULL, 'visible DESC,sortorder ASC')) and $has_permission) {
         $shown = 0;
         $courselisting = '';
         foreach ($mycourses as $mycourse) {

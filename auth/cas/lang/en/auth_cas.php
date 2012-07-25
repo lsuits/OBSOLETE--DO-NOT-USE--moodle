@@ -51,6 +51,7 @@ $string['auth_cas_logoutcas'] = 'Select \'yes\' if you want to logout from CAS w
 $string['auth_cas_logoutcas_key'] = 'CAS logout option';
 $string['auth_cas_multiauth'] = 'Select \'yes\' if you want to have multi-authentication (CAS + other authentication)';
 $string['auth_cas_multiauth_key'] = 'Multi-authentication';
+$string['auth_cas_myproxy_login'] = 'You can not use Moodle.';
 $string['auth_casnotinstalled'] = 'Cannot use CAS authentication. The PHP LDAP module is not installed.';
 $string['auth_cas_port'] = 'Port of the CAS server';
 $string['auth_cas_port_key'] = 'Port';

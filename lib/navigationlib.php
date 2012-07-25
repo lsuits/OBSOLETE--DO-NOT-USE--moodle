@@ -1042,10 +1042,12 @@ class global_navigation extends navigation_node {
             }
         } else {
             // The home element should be the site because the root node is my moodle
-            $this->rootnodes['home'] = $this->add(get_string('sitehome'), new moodle_url('/'), self::TYPE_SETTING, null, 'home');
-            if (!empty($CFG->defaulthomepage) && ($CFG->defaulthomepage == HOMEPAGE_MY)) {
-                // We need to stop automatic redirection
-                $this->rootnodes['home']->action->param('redirect', '0');
+            if (has_capability('moodle/course:create', $this->page->context)) {
+                $this->rootnodes['home'] = $this->add(get_string('sitehome'), new moodle_url('/'), self::TYPE_SETTING, null, 'home');
+                if ($CFG->defaulthomepage == HOMEPAGE_MY) {
+                    // We need to stop automatic redirection
+                    $this->rootnodes['home']->action->param('redirect', '0');
+                }
             }
         }
         $this->rootnodes['site']      = $this->add_course($SITE);
@@ -3596,7 +3598,7 @@ class settings_navigation extends navigation_node {
             $coursenode->add(get_string('editsettings'), $url, self::TYPE_SETTING, null, null, new pix_icon('i/settings', ''));
 
             // Add the course completion settings link
-            if ($CFG->enablecompletion && $course->enablecompletion) {
+            if ($CFG->enablecompletion && $course->enablecompletion && has_capability('moodle/course:create', $coursecontext)) {
                 $url = new moodle_url('/course/completion.php', array('id'=>$course->id));
                 $coursenode->add(get_string('completion', 'completion'), $url, self::TYPE_SETTING, null, null, new pix_icon('i/settings', ''));
             }
@@ -3646,7 +3648,7 @@ class settings_navigation extends navigation_node {
         }
 
         // Restore to this course
-        if (has_capability('moodle/restore:restorecourse', $coursecontext)) {
+        if (has_capability('moodle/restore:restorecourse', $coursecontext) && has_capability('moodle/course:create', $coursecontext)) {
             $url = new moodle_url('/backup/restorefile.php', array('contextid'=>$coursecontext->id));
             $coursenode->add(get_string('restore'), $url, self::TYPE_SETTING, null, 'restore', new pix_icon('i/restore', ''));
         }
