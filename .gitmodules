@@ -67,6 +67,9 @@
 [submodule "blocks/ues_people"]
 	path = blocks/ues_people
 	url = git://github.com/lsuits/ues_people.git
+[submodule "mod/forumng"]
+	path = mod/forumng
+	url = https://github.com/NigelCunningham/moodle-mod_forumng.git
 [submodule "grade/report/projected"]
 	path = grade/report/projected
 	url = git@github.com:lsuits/projected-final-grade.git
@@ -97,3 +100,6 @@
 [submodule "blocks/post_grades"]
 	path = blocks/post_grades
 	url = git@github.com:lsuits/post_grades.git
+[submodule "mod/attforblock"]
+	path = mod/attforblock
+	url = https://github.com/andreev-artem/moodle_mod_attforblock.git
