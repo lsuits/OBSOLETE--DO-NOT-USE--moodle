@@ -51,3 +51,5 @@ $string['view_edit_profile'] = '(View and edit your profile.)';
 $string['welcome'] = 'Welcome {$a}';
 $string['youhavemessages'] = 'You have {$a} unread ';
 $string['youhavenomessages'] = 'You have no unread ';
+// Added by Robert Russo to differentiate between visible courses and unavailable courses
+$string['unavailablecourses'] = '&nbsp;&nbsp;&nbsp;(Unavailable to students)';
