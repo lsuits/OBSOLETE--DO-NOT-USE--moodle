@@ -102,4 +102,4 @@
 	url = git@github.com:lsuits/post_grades.git
 [submodule "mod/attforblock"]
 	path = mod/attforblock
-	url = https://github.com/andreev-artem/moodle_mod_attforblock.git
+	url = git://github.com/lsuits/moodle_mod_attforblock.git
