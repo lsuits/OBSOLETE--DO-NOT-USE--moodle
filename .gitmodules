@@ -103,3 +103,6 @@
 [submodule "mod/attforblock"]
 	path = mod/attforblock
 	url = git://github.com/lsuits/moodle_mod_attforblock.git
+[submodule "local/lsu"]
+	path = local/lsu
+	url = git://github.com/lsuits/ues_lsu_enrollment.git
