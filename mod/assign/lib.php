@@ -214,6 +214,7 @@ function assign_print_overview($courses, &$htmlarray) {
         $time = time();
         $isopen = false;
         if ($assignment->duedate) {
+            $isopen = $assignment->allowsubmissionsfromdate <= $time;
             if ($assignment->preventlatesubmissions) {
                 $isopen = ($isopen && $time <= $assignment->duedate);
             }
