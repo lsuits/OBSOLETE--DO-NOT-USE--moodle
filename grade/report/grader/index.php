@@ -30,7 +30,7 @@ require_once $CFG->dirroot.'/grade/report/grader/lib.php';
 $courseid      = required_param('id', PARAM_INT);        // course id
 $page          = optional_param('page', 0, PARAM_INT);   // active page
 $silast        = optional_param('silast', 'all', PARAM_ALPHAEXT);   // Surname Initial
-$filast        = optional_param('filast', 'all', PARAM_ALPHAEXT);   // Surname Initial
+$filast        = optional_param('filast', 'all', PARAM_ALPHAEXT);   //  first name Initial
 $edit          = optional_param('edit', -1, PARAM_BOOL); // sticky editting mode
 
 $sortitemid    = optional_param('sortitemid', 0, PARAM_ALPHANUM); // sort by which grade item
@@ -54,7 +54,7 @@ require_capability('gradereport/grader:view', $context);
 require_capability('moodle/grade:viewall', $context);
 
 /// return tracking object
-$gpr = new grade_plugin_return(array('type'=>'report', 'plugin'=>'grader', 'courseid'=>$courseid, 'page'=>$page));
+$gpr = new grade_plugin_return(array('type'=>'report', 'plugin'=>'grader', 'courseid'=>$courseid, 'page'=>$page, 'silast'=>$silast, 'filast'=>$filast));
 
 /// last selected report session tracking
 if (!isset($USER->grade_last_report)) {
