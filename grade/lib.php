@@ -776,8 +776,8 @@ class grade_plugin_return {
             $this->courseid = optional_param('gpr_courseid', null, PARAM_INT);
             $this->userid   = optional_param('gpr_userid', null, PARAM_INT);
             $this->page     = optional_param('gpr_page', null, PARAM_INT);
-            $this->silast      = optional_param('gpr_silast', null, PARAM_INT);
-            $this->filast    = optional_param('gpr_filast', null, PARAM_INT);
+            $this->silast      = optional_param('gpr_silast', null, PARAM_ALPHAEXT);
+            $this->filast    = optional_param('gpr_filast', null, PARAM_ALPHAEXT);
 
         } else {
             foreach ($params as $key=>$value) {
@@ -952,12 +952,12 @@ class grade_plugin_return {
 
         if (!empty($this->silast)) {
             $mform->addElement('hidden', 'gpr_silast', $this->silast);
-            $mform->setType('gpr_silast', PARAM_INT);
+            $mform->setType('gpr_silast', PARAM_ALPHAEXT);
         }
 
         if (!empty($this->filast)) {
             $mform->addElement('hidden', 'gpr_filast', $this->filast);
-            $mform->setType('gpr_filast', PARAM_INT);
+            $mform->setType('gpr_filast', PARAM_ALPHAEXT);
         }
     }
 
