@@ -421,14 +421,13 @@ class auth_plugin_cas extends auth_plugin_ldap {
      * @return mixed array with no magic quotes or false on error
      */
     function get_userinfo($username) {
-        global $USER;
         if (empty($this->config->host_url)) {
             return array();
         }
         global $DB;
         $conditions = array('username' => $username);
         $user = $DB->get_record('user', $conditions);
-        if (!$user->firstname) {
+        if (!isset($user->firstname)) {
             return parent::get_userinfo($username);
         }
     }
