@@ -734,7 +734,24 @@ class grade_category extends grade_object {
                     if ($coef == 0) {
                         continue;
                     } else if ($coef < 0) {
-                        $extrasum += ($grade_value / ($this->grade_item->grademax / $items[$itemid]->grademax));
+                        if(($items[$itemid]->grademax) == 0) {
+echo'<br /> ********* MATH ********<br />';
+print_r($grade_value);
+echo' / ';
+print_r($this->grade_item->grademax);
+echo'<br />';
+                            $extrasum += ($grade_value / $this->grade_item->grademax);
+                        } else {
+echo'<br /> ********* MATH ********<br />';
+print_r($grade_value);
+echo' / ';
+echo'(';
+print_r($this->grade_item->grademax);
+echo' / ';
+print_r($items[$itemid]->grademax);
+echo') <br />';
+                            $extrasum += ($grade_value / ($this->grade_item->grademax / $items[$itemid]->grademax));
+                        }
                     } else {
                         $weightsum += $coef;
                         $sum       += $coef * $grade_value;
