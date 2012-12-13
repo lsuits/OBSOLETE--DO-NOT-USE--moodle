@@ -1960,8 +1960,18 @@ class grade_report_grader extends grade_report {
         }
 
         $decimals = $parent->get_grade_item()->get_decimals();
-        $computed = $evaluated / $this->weightedtotals[$parent->id];
+        if (($this->weightedtotals[$parent->id]) == 0) {
+            $computed = 0;
+        } else {
+            // REMOVE ME TODO REMOVE ME TODO REMOVE ME
+            echo'<br /> ********* MATH ********<br />';
+            print_r($evaluated);
+            echo' / ';
+            print_r($this->weightedtotals[$parent->id]);
+            echo'<br />';   
 
+            $computed = $evaluated / $this->weightedtotals[$parent->id];
+        }
         return ' (' . format_float($computed * 100, $decimals) . '%) ';
     }
 }
