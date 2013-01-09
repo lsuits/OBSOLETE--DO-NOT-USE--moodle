@@ -32,12 +32,13 @@ function mymedia_extends_navigation($navigation) {
     $mymedia = get_string('nav_mymedia', 'local_mymedia');
     $upload = get_string('nav_upload', 'local_mymedia');
 
-    $node_home = $navigation->get('home');
+    $node_home = $navigation->get('1');
+    $kaltura_home = $node_home->find(kaltura_branch);
 
     $context = get_context_instance(CONTEXT_USER, $USER->id);
 
     if ($node_home && has_capability('local/mymedia:view', $context, $USER)) {
-        $node_mymedia = $node_home->add($mymedia, new moodle_url('/local/mymedia/mymedia.php'),
+        $node_mymedia = $kaltura_home->add($mymedia, new moodle_url('/local/mymedia/mymedia.php'),
                                         navigation_node::NODETYPE_LEAF, $mymedia, 'mymedia');
     }
 }
