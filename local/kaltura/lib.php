@@ -43,15 +43,20 @@ function kaltura_extends_navigation($navigation) {
         return '';
     }
 
+    //get a reference to the 'Site Pages' root nav item
     $node_home = $navigation->get('1');
-    $new_node = navigation_node::create('Kaltura', null, null, 'kaltura', 'kaltura_branch');
-    $kaltura_home = $node_home->add_node($new_node);
+    
+    //define attributes of a new node that will serve as the root of our Kaltura nav branch
+    $kt_branch = navigation_node::create('Kaltura', null, null, 'kaltura', 'kaltura_branch');
+    
+    //attach the kaltura nav branch to the 'Site Pages' node
+    $kaltura_branch = $node_home->add_node($kt_branch);
     
     
     $report_text = get_string('kaltura_course_reports', 'local_kaltura');
 
-    if ($kaltura_home) {
-        $node_reports = $kaltura_home->add($report_text, null, 70, $report_text, 'kal_reports');
+    if ($kaltura_branch) {
+        $node_reports = $kaltura_branch->add($report_text, null, 70, $report_text, 'kal_reports');
     }
 
     $current_course = $PAGE->course->id;
