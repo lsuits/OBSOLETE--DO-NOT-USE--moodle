@@ -28,17 +28,17 @@ define('MYMEDIA_ITEMS_PER_PAGE', '9');
 function mymedia_extends_navigation($navigation) {
 
     global $USER;
+    if ($USER->id) {
+        $mymedia = get_string('nav_mymedia', 'local_mymedia');
+        $upload = get_string('nav_upload', 'local_mymedia');
 
-    $mymedia = get_string('nav_mymedia', 'local_mymedia');
-    $upload = get_string('nav_upload', 'local_mymedia');
+        $node_home = $navigation->get('1');
 
-    $node_home = $navigation->get('1');
+        $context = get_context_instance(CONTEXT_USER, $USER->id);
 
-    $context = get_context_instance(CONTEXT_USER, $USER->id);
-
-    if ($node_home && has_capability('local/mymedia:view', $context, $USER)) {
-        $node_mymedia = $node_home->add($mymedia, new moodle_url('/local/mymedia/mymedia.php'),
-                                        navigation_node::NODETYPE_LEAF, $mymedia, 'mymedia');
+        if ($node_home && has_capability('local/mymedia:view', $context, $USER)) {
+            $node_mymedia = $node_home->add($mymedia, new moodle_url('/local/mymedia/mymedia.php'),
+                                            navigation_node::NODETYPE_LEAF, $mymedia, 'mymedia');
+        }
     }
 }
-

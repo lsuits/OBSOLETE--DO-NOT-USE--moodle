@@ -32,40 +32,44 @@ function kaltura_extends_navigation($navigation) {
 
     global $USER, $PAGE, $SITE;
 
-    // Finds courses where the user has this capabiltiy
-    $courses = get_user_capability_course('local/kaltura:view_report', null, true, 'shortname', 'shortname ASC');
+    $systemcontext = context_system::instance();
+    if (has_capability('moodle/course:create', $systemcontext)) {
+    } else {
+        // Finds courses where the user has this capabiltiy
+        $courses = get_user_capability_course('local/kaltura:view_report', null, true, 'shortname', 'shortname ASC');
 
-    if (!isloggedin()) {
-        return '';
-    }
-
-    if (empty($courses)) {
-        return '';
-    }
-
-    $node_home = $navigation->get('1')->find(6, null);
-    $report_text = get_string('kaltura_course_reports', 'local_kaltura');
-
-    if ($node_home) {
-        $node_reports = $node_home->add($report_text, null, 70, $report_text, 'kal_reports');
-    }
-
-    $current_course = $PAGE->course->id;
-    $i   = 5;
-
-    foreach ($courses as $key => $course) {
-
-        if ($SITE->id == $course->id) {
-            $i++;
-            continue;
+        if (!isloggedin()) {
+            return '';
         }
 
-        $course_name = format_string($course->shortname);
-        $node_reports->add($course_name, new moodle_url('/local/kaltura/reports.php',
-                                                        array('courseid' => $course->id)),
-                                                        navigation_node::NODETYPE_LEAF, $course_name, 'kal_reports_course' . $i);
+        if (empty($courses)) {
+            return '';
+        }
 
-        $i++;
+        $node_home = $navigation->get('mycourses');//->find(6, null);
+        $report_text = get_string('kaltura_course_reports', 'local_kaltura');
+        if ($node_home) {
+            $node_reports = $node_home->add($report_text, null, 70, $report_text, 'kal_reports');
+        }
+
+        $current_course = $PAGE->course->id;
+        $i   = 5;
+
+        foreach ($courses as $key => $course) {
+
+            if ($SITE->id == $course->id) {
+                $i++;
+                continue;
+            }
+
+            $course_name = format_string($course->shortname);
+            $node_reports->add($course_name, new moodle_url('/local/kaltura/reports.php',
+                                                            array('courseid' => $course->id)),
+                                                            navigation_node::NODETYPE_LEAF, $course_name, 'kal_reports_course' . $i);
+
+
+            $i++;
+        }
     }
 }
 
