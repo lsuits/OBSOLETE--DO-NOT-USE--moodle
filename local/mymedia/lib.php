@@ -21,7 +21,7 @@
  */
 
 define('MYMEDIA_ITEMS_PER_PAGE', '9');
-
+require_login();
 /**
  * This function adds my media links to the navigation block
  */
