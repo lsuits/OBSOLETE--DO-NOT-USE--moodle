@@ -32,7 +32,7 @@ function mymedia_extends_navigation($navigation) {
     $mymedia = get_string('nav_mymedia', 'local_mymedia');
     $upload = get_string('nav_upload', 'local_mymedia');
 
-    $node_home = $navigation->get('home');
+    $node_home = $navigation->get('1');
 
     $context = get_context_instance(CONTEXT_USER, $USER->id);
 
