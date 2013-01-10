@@ -45,18 +45,12 @@ function kaltura_extends_navigation($navigation) {
 
     //get a reference to the 'Site Pages' root nav item
     $node_home = $navigation->get('1');
-    
-    //define attributes of a new node that will serve as the root of our Kaltura nav branch
-    $kt_branch = navigation_node::create('Kaltura', null, null, 'kaltura', 'kaltura_branch');
-    
-    //attach the kaltura nav branch to the 'Site Pages' node
-    $kaltura_branch = $node_home->add_node($kt_branch);
-    
-    
+    $reports_home = $node_home->find(6);
+
     $report_text = get_string('kaltura_course_reports', 'local_kaltura');
 
-    if ($kaltura_branch) {
-        $node_reports = $kaltura_branch->add($report_text, null, 70, $report_text, 'kal_reports');
+    if ($reports_home) {
+        $node_reports = $reports_home->add($report_text, null, 70, $report_text, 'kal_reports');
     }
 
     $current_course = $PAGE->course->id;

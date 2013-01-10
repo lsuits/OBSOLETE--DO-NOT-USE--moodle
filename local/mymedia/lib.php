@@ -35,13 +35,11 @@ function mymedia_extends_navigation($navigation) {
     //get a reference to a convenient nav item, 'Site Pages', for instance
     $node_home = $navigation->get('1');
     
-    //get a reference to the kaltura branch node defined in local/kaltura/lib.php
-    $kaltura_branch = $node_home->find(kaltura_branch);
-
+    
     $context = get_context_instance(CONTEXT_USER, $USER->id);
 
     if ($node_home && has_capability('local/mymedia:view', $context, $USER)) {
-        $node_mymedia = $kaltura_branch->add($mymedia, new moodle_url('/local/mymedia/mymedia.php'),
+        $node_mymedia = $node_home->add($mymedia, new moodle_url('/local/mymedia/mymedia.php'),
                                         navigation_node::NODETYPE_LEAF, $mymedia, 'mymedia');
     }
 }
