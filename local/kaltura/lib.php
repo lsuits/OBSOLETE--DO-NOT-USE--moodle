@@ -46,7 +46,7 @@ function kaltura_extends_navigation($navigation) {
             return '';
         }
 
-        $node_home = $navigation->get('mycourses');//->find(6, null);
+        $node_home = $navigation->get('mycourses');
         $report_text = get_string('kaltura_course_reports', 'local_kaltura');
         if ($node_home) {
             $node_reports = $node_home->add($report_text, null, 70, $report_text, 'kal_reports');
