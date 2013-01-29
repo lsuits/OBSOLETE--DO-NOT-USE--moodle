@@ -11,17 +11,17 @@ if ($hassiteconfig) {
 
         require_once dirname(__FILE__) . '/provider.php';
 
-        $provider = new lsu_enrollment_provider(false);
+        $provider = new online_enrollment_provider(false);
 
-        $reprocessurl = new moodle_url('/local/lsu/reprocess.php');
+        $reprocessurl = new moodle_url('/local/online/reprocess.php');
 
         $a = new stdClass;
         $a->reprocessurl = $reprocessurl->out(false);
 
-        $settings = new admin_settingpage('local_lsu', $provider->get_name());
+        $settings = new admin_settingpage('local_online', $provider->get_name());
         $settings->add(
-            new admin_setting_heading('local_lsu_header', '',
-            get_string('pluginname_desc', 'local_lsu', $a))
+            new admin_setting_heading('local_online_header', '',
+            get_string('pluginname_desc', 'local_online', $a))
         );
 
         $provider->settings($settings);

@@ -1,31 +1,31 @@
 <?php
 
-interface semester_codes {
-    const FALL = '1S';
-    const SPRING = '2S';
-    const SUMMER = '3S';
-    const WINTER_INT = '1T';
-    const SPRING_INT = '2T';
-    const SUMMER_INT = '3T';
+interface online_semester_codes {
+    const FALL1 = '1L';
+    const FALL2 = '1P';
+    const SPRING1 = '2D';
+    const SPRING2 = '2L';
+    const SUMMER1 = '3D';
+    const SUMMER2 = '1D';
 }
 
-interface institution_codes {
-    const LSU_SEM = 'CLSB';
+interface online_institution_codes {
+    const ONLINE_SEM = 'CLSB';
     const LAW_SEM = 'LAWB';
 
-    const LSU_FINAL = 'CLSE';
+    const ONLINE_FINAL = 'CLSE';
     const LAW_FINAL = 'LAWE';
 
-    const LSU_CAMPUS = '01';
+    const ONLINE_CAMPUS = '01';
     const LAW_CAMPUS = '08';
 
-    const LSU_INST = '1590';
+    const ONLINE_INST = '1590';
     const LAW_INST = '1595';
 }
 
-abstract class lsu_source implements institution_codes, semester_codes {
+abstract class online_source implements online_institution_codes, online_semester_codes {
     /**
-     * An LSU source requires these
+     * An ONLINE source requires these
      */
     var $serviceId;
     var $username;
@@ -105,17 +105,17 @@ XML;
         };
 
         switch ($semester_name) {
-            case 'Fall': return $partial($semester_year + 1, self::FALL);
-            case 'WinterInt': return $partial($semester_year + 1, self::WINTER_INT);
-            case 'Summer': return $partial($semester_year, self::SUMMER);
-            case 'Spring': return $partial($semester_year, self::SPRING);
-            case 'SummerInt': return $partial($semester_year, self::SUMMER_INT);
-            case 'SpringInt': return $partial($semester_year, self::SPRING_INT);
+            case 'First Fall': return $partial($semester_year + 1, self::FALL1);
+            case 'Second Fall': return $partial($semester_year + 1, self::FALL2);
+            case 'First Spring': return $partial($semester_year, self::SPRING1);
+            case 'Second Spring': return $partial($semester_year, self::SPRING2);
+            case 'First Summer': return $partial($semester_year, self::SUMMER1);
+            case 'Second Summer': return $partial($semester_year + 1, self::SUMMER2);
         }
     }
 }
 
-abstract class lsu_teacher_format extends lsu_source {
+abstract class online_teacher_format extends online_source {
     public function format_teacher($xml_teacher) {
         $primary_flag = trim($xml_teacher->PRIMARY_INSTRUCTOR);
 
@@ -134,7 +134,7 @@ abstract class lsu_teacher_format extends lsu_source {
     }
 }
 
-abstract class lsu_student_format extends lsu_source {
+abstract class online_student_format extends online_source {
     const AUDIT = 'AU';
 
     public function format_student($xml_student) {

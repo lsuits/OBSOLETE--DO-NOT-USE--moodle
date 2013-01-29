@@ -8,23 +8,23 @@ require_once 'provider.php';
 require_login();
 
 if (!is_siteadmin($USER->id)) {
-    print_error('no_permission', 'local_lsu', '/my');
+    print_error('no_permission', 'local_online', '/my');
 }
 
-$provider = new lsu_enrollment_provider();
+$provider = new online_enrollment_provider();
 
 $confirmed = optional_param('confirm', null, PARAM_INT);
 
 $semesters = ues_semester::in_session(time());
 
-$base_url = new moodle_url('/local/lsu/reprocess.php');
+$base_url = new moodle_url('/local/online/reprocess.php');
 
-$_s = ues::gen_str('local_lsu');
+$_s = ues::gen_str('local_online');
 
 $pluginname = $_s('pluginname');
 $heading = $_s('reprocess');
 
-$admin_plugin = new moodle_url('/admin/settings.php', array('section' => 'local_lsu'));
+$admin_plugin = new moodle_url('/admin/settings.php', array('section' => 'local_online'));
 
 $PAGE->set_url($base_url);
 $PAGE->set_context(get_context_instance(CONTEXT_SYSTEM));

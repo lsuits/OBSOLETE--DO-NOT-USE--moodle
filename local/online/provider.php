@@ -2,7 +2,7 @@
 
 require_once dirname(__FILE__) . '/processors.php';
 
-class lsu_enrollment_provider extends enrollment_provider {
+class online_enrollment_provider extends enrollment_provider {
     var $url;
     var $wsdl;
     var $username;
@@ -11,7 +11,7 @@ class lsu_enrollment_provider extends enrollment_provider {
     var $settings = array(
         'credential_location' => 'https://secure.web.lsu.edu/credentials.php',
         'wsdl_location' => 'webService.wsdl',
-        'semester_source' => 'MOODLE_ONLINE_SEMESTERS',
+        'semester_source' => 'MOODLE_SEMESTERS',
         'course_source' => 'MOODLE_COURSES',
         'teacher_by_department' => 'MOODLE_INSTRUCTORS_BY_DEPT',
         'student_by_department' => 'MOODLE_STUDENTS_BY_DEPT',
@@ -24,10 +24,10 @@ class lsu_enrollment_provider extends enrollment_provider {
     );
 
     // User data caches to speed things up
-    private $lsu_degree_cache = array();
-    private $lsu_student_data_cache = array();
-    private $lsu_sports_cache = array();
-    private $lsu_anonymous_cache = array();
+    private $online_degree_cache = array();
+    private $online_student_data_cache = array();
+    private $online_sports_cache = array();
+    private $online_anonymous_cache = array();
 
     function init() {
         global $CFG;
@@ -95,74 +95,74 @@ class lsu_enrollment_provider extends enrollment_provider {
     }
 
     public static function plugin_key() {
-        return 'local_lsu';
+        return 'local_online';
     }
 
     function semester_source() {
-        return new lsu_semesters(
+        return new online_semesters(
             $this->username, $this->password,
             $this->wsdl, $this->get_setting('semester_source')
         );
     }
 
     function course_source() {
-        return new lsu_courses(
+        return new online_courses(
             $this->username, $this->password,
             $this->wsdl, $this->get_setting('course_source')
         );
     }
 
     function teacher_source() {
-        return new lsu_teachers(
+        return new online_teachers(
             $this->username, $this->password,
             $this->wsdl, $this->get_setting('teacher_source')
         );
     }
 
     function student_source() {
-        return new lsu_students(
+        return new online_students(
             $this->username, $this->password,
             $this->wsdl, $this->get_setting('student_source')
         );
     }
 
     function student_data_source() {
-        return new lsu_student_data(
+        return new online_student_data(
             $this->username, $this->password,
             $this->wsdl, $this->get_setting('student_data_source')
         );
     }
 
     function anonymous_source() {
-        return new lsu_anonymous(
+        return new online_anonymous(
             $this->username, $this->password,
             $this->wsdl, $this->get_setting('student_anonymous_source')
         );
     }
 
     function degree_source() {
-        return new lsu_degree(
+        return new online_degree(
             $this->username, $this->password,
             $this->wsdl, $this->get_setting('student_degree_source')
         );
     }
 
     function sports_source() {
-        return new lsu_sports(
+        return new online_sports(
             $this->username, $this->password,
             $this->wsdl, $this->get_setting('student_ath_source')
         );
     }
 
     function teacher_department_source() {
-        return new lsu_teachers_by_department(
+        return new online_teachers_by_department(
             $this->username, $this->password,
             $this->wsdl, $this->get_setting('teacher_by_department')
         );
     }
 
     function student_department_source() {
-        return new lsu_students_by_department(
+        return new online_students_by_department(
             $this->username, $this->password,
             $this->wsdl, $this->get_setting('student_by_department')
         );
@@ -209,9 +209,9 @@ class lsu_enrollment_provider extends enrollment_provider {
                 } catch (Exception $e) {
                     $handler = new stdClass;
 
-                    $handler->file = '/enrol/ues/plugins/lsu/errors.php';
+                    $handler->file = '/enrol/ues/plugins/online/errors.php';
                     $handler->function = array(
-                        'lsu_provider_error_handlers',
+                        'online_provider_error_handlers',
                         'reprocess_' . $key
                     );
 
