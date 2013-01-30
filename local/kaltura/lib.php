@@ -33,12 +33,11 @@ function kaltura_extends_navigation($navigation) {
     global $COURSE;
     
     $context = get_context_instance(CONTEXT_COURSE, $COURSE->id, MUST_EXIST);
-    if (!isloggedin()) {
+    
+    if((!has_capability('local/kaltura:view_report', $context) || ($COURSE->id == 1) || (!isloggedin()))){
         return '';
     }
-    if(!has_capability('local/kaltura:view_report', $context)){
-        return '';
-    }
+    
 
     //get a reference to the 'Site Pages' root nav item
     $node_home = $navigation->get('1');
@@ -61,7 +60,8 @@ function kaltura_extends_navigation($navigation) {
                 new moodle_url('/local/kaltura/reports.php',array('courseid' => $COURSE->id)),
                 navigation_node::NODETYPE_LEAF, 
                 format_string($COURSE->shortname), 
-                'kal_reports_course'
+                'kal_reports_course',
+                new pix_icon('i/report', '')
                 );
     }
 
