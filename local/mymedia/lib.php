@@ -29,14 +29,13 @@ function mymedia_extends_navigation($navigation) {
 
     global $USER;
     
-    
+    if($USER->id){
     $mymedia = get_string('nav_mymedia', 'local_mymedia');
     $upload = get_string('nav_upload', 'local_mymedia');
 
     //get a reference to a convenient nav item, 'Site Pages', for instance
     $node_home = $navigation->get('myprofile');
     
-    if($USER->id){
         $context = get_context_instance(CONTEXT_USER, $USER->id);
 
         if ($node_home && has_capability('local/mymedia:view', $context, $USER)) {
