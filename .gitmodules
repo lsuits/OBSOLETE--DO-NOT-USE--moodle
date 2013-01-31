@@ -106,3 +106,6 @@
 [submodule "mod/attforblock"]
 	path = mod/attforblock
 	url = git@github.com:lsuits/moodle_mod_attforblock.git
+[submodule "blocks/panopto"]
+	path = blocks/panopto
+	url = git://github.com/Panopto/Moodle-2.0-Plugin-for-Panopto.git
