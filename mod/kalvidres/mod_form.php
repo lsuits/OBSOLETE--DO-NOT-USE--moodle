@@ -134,7 +134,7 @@ class mod_kalvidres_mod_form extends moodleform_mod {
         $mform->addElement('hidden', 'width', '', $attr);
         $mform->setDefault('width', '400');
         $mform->setType('width', PARAM_TEXT);
-
+        
         $mform->addElement('header', 'general', get_string('general', 'form'));
 
         $mform->addElement('text', 'name', get_string('name', 'kalvidres'), array('size'=>'64'));
@@ -185,9 +185,11 @@ class mod_kalvidres_mod_form extends moodleform_mod {
 
         $thumbnail = $this->get_thumbnail_markup();
         $prop      = array();
-
+        
+        $copyright = html_writer::tag('div', get_string('lsu_warning_copyright', 'kalvidres'), array('class' => 'lsu_warning'));
+        $mform->addElement('static', 'warning', 'NOTICE!', $copyright);
         $mform->addElement('static', 'add_video_thumb', '&nbsp;', $thumbnail);
-
+        
         if (empty($this->current->entry_id)) {
             $prop = array('style' => 'display:none;');
         }
@@ -232,9 +234,6 @@ class mod_kalvidres_mod_form extends moodleform_mod {
         
         $attr = array('class' => 'hd');
         $output .= html_writer::tag('div', '', $attr);
-
-        $attr = array('id' => 'lsu_warning');
-        $output .= html_writer::tag('p', get_string('lsu_warning_copyright', 'kalvidres'), $attr);
         
         $attr = array('class' => 'bd');
         $output .= html_writer::tag('div', '', $attr);
@@ -244,6 +243,9 @@ class mod_kalvidres_mod_form extends moodleform_mod {
         // Panel markup to set video properties
         $attr = array('id' => 'video_properties_panel');
         $output .=  html_writer::start_tag('div', $attr);
+        
+        $attr = array('id' => 'lsu_warning');
+        $output .= html_writer::tag('p', get_string('lsu_warning_copyright', 'kalvidres'), $attr);
 
         $attr = array('class' => 'hd');
         $output .= html_writer::tag('div', get_string('vid_prop_header', 'kalvidres'), $attr);

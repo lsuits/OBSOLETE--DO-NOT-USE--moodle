@@ -29,7 +29,7 @@
     left: 12px;
 }
 
-#lsu_warning{
+.lsu_warning{
     color: red;
     background-color: white;
 }
