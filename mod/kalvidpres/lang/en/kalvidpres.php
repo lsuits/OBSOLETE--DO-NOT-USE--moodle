@@ -37,3 +37,6 @@ $string['scr_loading'] = 'Loading...';
 $string['kalvidpres:screenrecorder'] = 'Screen recorder';
 $string['previewvideo'] = 'Preview';
 $string['javanotenabled'] = 'Browser Java is disabled.  Please enable Java and refresh the page to use the screen recorder.';
+
+//begin LSU Custom
+$string['lsu_warning_copyright'] = "You must have permission to upload any copyrighted materials; ALL videos must have an accompanying transcript!";
