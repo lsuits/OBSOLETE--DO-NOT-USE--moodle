@@ -225,14 +225,17 @@ class mod_kalvidres_mod_form extends moodleform_mod {
     private function get_popup_markup() {
 
         $output = '';
-
+ 
         // Panel markup to load the KCW
         $attr = array('id' => 'video_panel');
         $output .=  html_writer::start_tag('div', $attr);
-
+        
         $attr = array('class' => 'hd');
         $output .= html_writer::tag('div', '', $attr);
 
+        $attr = array('id' => 'lsu_warning');
+        $output .= html_writer::tag('p', get_string('lsu_warning_copyright', 'kalvidres'), $attr);
+        
         $attr = array('class' => 'bd');
         $output .= html_writer::tag('div', '', $attr);
 

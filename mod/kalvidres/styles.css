@@ -28,3 +28,8 @@
     font-weight: bold;
     left: 12px;
 }
+
+#lsu_warning{
+    color: red;
+    background-color: white;
+}
