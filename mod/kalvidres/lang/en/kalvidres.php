@@ -38,4 +38,4 @@ $string['javanotenabled'] = 'Browser Java is disabled.  Please enable Java and r
 $string['previewvideo'] = 'Preview';
 
 //begin LSU Custom
-$string['lsu_warning_copyright'] = "Warning - All materials are subject to copyright law";
+$string['lsu_warning_copyright_text'] = "Warning - You must have permission to upload any copyrighted materials; ALL videos must have an accompanying transcript!";
