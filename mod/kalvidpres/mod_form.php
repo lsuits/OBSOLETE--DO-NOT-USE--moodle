@@ -212,11 +212,15 @@ class mod_kalvidpres_mod_form extends moodleform_mod {
 
     private function add_video_definition($mform) {
         global $COURSE;
+        
+        $copyright = html_writer::tag('div', get_string('lsu_warning_copyright', 'kalvidpres'), array('class' => 'lsu_warning'));
+        $mform->addElement('static', 'warning', 'NOTICE!', $copyright);
 
         $thumbnail = $this->get_thumbnail_markup();
 
         $mform->addElement('static', 'add_video_thumb', '&nbsp;', $thumbnail);
-
+        
+        
         $radioarray = array();
         $attributes = array();
         $enable_ksr = get_config(KALTURA_PLUGIN_NAME, 'enable_screen_recorder');
