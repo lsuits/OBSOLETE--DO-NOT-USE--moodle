@@ -11,7 +11,7 @@ class online_enrollment_provider extends enrollment_provider {
     var $settings = array(
         'credential_location' => 'https://secure.web.lsu.edu/credentials.php',
         'wsdl_location' => 'webService.wsdl',
-        'semester_source' => 'MOODLE_SEMESTERS',
+        'semester_source' => 'ONLINE_MOODLE_SEMESTERS',
         'course_source' => 'MOODLE_COURSES',
         'teacher_by_department' => 'MOODLE_INSTRUCTORS_BY_DEPT',
         'student_by_department' => 'MOODLE_STUDENTS_BY_DEPT',
