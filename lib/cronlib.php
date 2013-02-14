@@ -64,14 +64,27 @@ function cron_run() {
     mtrace("Server Time: ".date('r',$timenow)."\n\n");
 
 
+    // Delete old logs to save space via a timer
+    mtrace("Running clean-up tasks");
+    if (!empty($CFG->loglifetime)) {  // value in days
+        require_once($CFG->dirroot.'/lib/statslib.php');
+        $timetocheck = stats_get_base_daily() + $CFG->loglifetimestarthour*60*60 + $CFG->loglifetimestartminute*60;
+        $timetocheck2 = $timetocheck + 3600;
+        if ((time() > $timetocheck) && (time() < $timetocheck2)) {
+            $loglifetime = $timenow - ($CFG->loglifetime * 3600 * 24);
+            $DB->delete_records_select("log", "time < ?", array($loglifetime));
+            mtrace(" Deleted old log records");
+        }
+    }
+
     // Run cleanup core cron jobs, but not every time since they aren't too important.
     // These don't have a timer to reduce load, so we'll use a random number
     // to randomly choose the percentage of times we should run these jobs.
+
     srand ((double) microtime() * 10000000);
     $random100 = rand(0,100);
     if ($random100 < 20) {     // Approximately 20% of the time.
-        mtrace("Running clean-up tasks...");
-
+        mtrace(" Starting random clean-up tasks");
         // Delete users who haven't confirmed within required period
         if (!empty($CFG->deleteunconfirmed)) {
             $cuttime = $timenow - ($CFG->deleteunconfirmed * 3600);
@@ -82,7 +95,7 @@ function cron_run() {
             foreach ($rs as $user) {
                 delete_user($user); // we MUST delete user properly first
                 $DB->delete_records('user', array('id'=>$user->id)); // this is a bloody hack, but it might work
-                mtrace(" Deleted unconfirmed user for ".fullname($user, true)." ($user->id)");
+                mtrace("  Deleted unconfirmed user for ".fullname($user, true)." ($user->id)");
             }
             $rs->close();
         }
@@ -99,19 +112,10 @@ function cron_run() {
                                           array($cuttime));
             foreach ($rs as $user) {
                 delete_user($user);
-                mtrace(" Deleted not fully setup user $user->username ($user->id)");
+                mtrace("  Deleted not fully setup user $user->username ($user->id)");
             }
             $rs->close();
         }
-
-
-        // Delete old logs to save space (this might need a timer to slow it down...)
-        if (!empty($CFG->loglifetime)) {  // value in days
-            $loglifetime = $timenow - ($CFG->loglifetime * 3600 * 24);
-            $DB->delete_records_select("log", "time < ?", array($loglifetime));
-            mtrace(" Deleted old log records");
-        }
-
 
         // Delete old backup_controllers and logs.
         $loglifetime = get_config('backup', 'loglifetime');
@@ -127,7 +131,7 @@ function cron_run() {
             // Delete records from backup_controllers.
             $DB->execute("DELETE FROM {backup_controllers}
                           WHERE timecreated < ?", array($loglifetime));
-            mtrace(" Deleted old backup records");
+            mtrace("  Deleted old backup records");
         }
 
 
@@ -135,42 +139,44 @@ function cron_run() {
         if (!empty($CFG->cachetext)) {   // Defined in config.php
             $cachelifetime = time() - $CFG->cachetext - 60;  // Add an extra minute to allow for really heavy sites
             $DB->delete_records_select('cache_text', "timemodified < ?", array($cachelifetime));
-            mtrace(" Deleted old cache_text records");
+            mtrace("  Deleted old cache_text records");
         }
 
 
         if (!empty($CFG->usetags)) {
             require_once($CFG->dirroot.'/tag/lib.php');
             tag_cron();
-            mtrace(' Executed tag cron');
+            mtrace('  Executed tag cron');
         }
 
 
         // Context maintenance stuff
         context_helper::cleanup_instances();
-        mtrace(' Cleaned up context instances');
+        mtrace('  Cleaned up context instances');
         context_helper::build_all_paths(false);
         // If you suspect that the context paths are somehow corrupt
         // replace the line below with: context_helper::build_all_paths(true);
-        mtrace(' Built context paths');
+        mtrace('  Built context paths');
 
 
         // Remove expired cache flags
         gc_cache_flags();
-        mtrace(' Cleaned cache flags');
+        mtrace('  Cleaned cache flags');
 
 
         // Cleanup messaging
         if (!empty($CFG->messagingdeletereadnotificationsdelay)) {
             $notificationdeletetime = time() - $CFG->messagingdeletereadnotificationsdelay;
             $DB->delete_records_select('message_read', 'notification=1 AND timeread<:notificationdeletetime', array('notificationdeletetime'=>$notificationdeletetime));
-            mtrace(' Cleaned up read notifications');
+            mtrace('  Cleaned up read notifications');
         }
 
-        mtrace("...finished clean-up tasks");
+        mtrace(" Finished random clean-up tasks");
+        // End of occasional clean-up tasks
 
-    } // End of occasional clean-up tasks
+    }
 
+    mtrace("Finished scheduled clean-up tasks");
 
     // Send login failures notification - brute force protection in moodle is weak,
     // we should at least send notices early in each cron execution
