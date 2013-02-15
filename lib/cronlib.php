@@ -65,17 +65,36 @@ function cron_run() {
 
 
     // Delete old logs to save space via a timer
-    mtrace("Running clean-up tasks");
+    mtrace("Running logs clean-up tasks");
+    $cleanup_start = time();
     if (!empty($CFG->loglifetime)) {  // value in days
-        require_once($CFG->dirroot.'/lib/statslib.php');
-        $timetocheck = stats_get_base_daily() + $CFG->loglifetimestarthour*60*60 + $CFG->loglifetimestartminute*60;
-        $timetocheck2 = $timetocheck + 3600;
-        if ((time() > $timetocheck) && (time() < $timetocheck2)) {
+        require_once($CFG->dirroot.'/lib/statslib.php'); //need stats_get_base_daily() to know when today started
+        mtrace(sprintf("checking whether we need to prune logs; logs retention policy is set for %s days", $CFG->loglifetime));
+        
+        //calculate the timestamp when our log-pruning window starts
+        $check_window_start = stats_get_base_daily() + $CFG->loglifetimestarthour*60*60 + $CFG->loglifetimestartminute*60;
+        
+        //calculate the timestamp of end of the window
+        $check_window_end = $check_window_start + 3600;
+        
+        
+        //to prune or not to prune?
+        if ((time() > $check_window_start) && (time() < $check_window_end)) {
+            mtrace(sprintf("We are within the window {%s - %s}, pruning logs...", 
+                    strftime('%l:%M %P', $check_window_start),strftime('%l:%M %P', $check_window_end)));
+            
             $loglifetime = $timenow - ($CFG->loglifetime * 3600 * 24);
             $DB->delete_records_select("log", "time < ?", array($loglifetime));
+            
             mtrace(" Deleted old log records");
+            mtrace(sprintf("Finished cleaning up logs after %s seconds", time()-$cleanup_start));
+        }else{
+            mtrace(sprintf("NOT within the window {%s - %s}, skipping logs-pruning routine...", 
+                    strftime('%l:%M %P', $check_window_start),strftime('%l:%M %P', $check_window_end)));
         }
+        
     }
+
 
     // Run cleanup core cron jobs, but not every time since they aren't too important.
     // These don't have a timer to reduce load, so we'll use a random number
@@ -442,9 +461,9 @@ function cron_run() {
     if (!empty($CFG->enablestats) and empty($CFG->disablestatsprocessing)) {
         require_once($CFG->dirroot.'/lib/statslib.php');
         // check we're not before our runtime
-        $timetocheck = stats_get_base_daily() + $CFG->statsruntimestarthour*60*60 + $CFG->statsruntimestartminute*60;
+        $check_window_start = stats_get_base_daily() + $CFG->statsruntimestarthour*60*60 + $CFG->statsruntimestartminute*60;
 
-        if (time() > $timetocheck) {
+        if (time() > $check_window_start) {
             // process configured number of days as max (defaulting to 31)
             $maxdays = empty($CFG->statsruntimedays) ? 31 : abs($CFG->statsruntimedays);
             if (stats_cron_daily($maxdays)) {
@@ -456,7 +475,7 @@ function cron_run() {
             }
             @set_time_limit(0);
         } else {
-            mtrace('Next stats run after:'. userdate($timetocheck));
+            mtrace('Next stats run after:'. userdate($check_window_start));
         }
     }
 
