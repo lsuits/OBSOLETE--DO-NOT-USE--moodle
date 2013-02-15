@@ -66,8 +66,11 @@ function cron_run() {
 
     // Delete old logs to save space via a timer
     mtrace("Running logs clean-up tasks");
+    $lifetime  = isset($CFG->loglifetime);
+    $starthour = isset($CFG->loglifetimestarthour);
+    $startmin  = isset($CFG->loglifetimestartminute);
     $cleanup_start = time();
-    if (!empty($CFG->loglifetime)) {  // value in days
+    if ($lifetime and $starthour and $startmin) {  // value in days
         require_once($CFG->dirroot.'/lib/statslib.php'); //need stats_get_base_daily() to know when today started
         mtrace(sprintf("checking whether we need to prune logs; logs retention policy is set for %s days", $CFG->loglifetime));
         
@@ -93,6 +96,12 @@ function cron_run() {
                     strftime('%l:%M %P', $check_window_start),strftime('%l:%M %P', $check_window_end)));
         }
         
+    }else{
+        mtrace("\n\n-----WARNING!!! All config values must be set!!!");
+        !isset($lifetime)   ? mtrace("ensure you have set a value for 'loglifetime'") :null;
+        !isset($starthour)  ? mtrace("ensure you have set a value for 'loglifetimestarthour'") :null;
+        !isset($startmin)   ? mtrace("ensure you have set a value for 'loglifetimestartminute'") :null;
+        mtrace("-----Skipping logs history pruning operation!!!!\n\n");
     }
 
 
