@@ -66,9 +66,12 @@ function cron_run() {
 
     // Delete old logs to save space via a timer
     mtrace("Running logs clean-up tasks");
-    $lifetime  = isset($CFG->loglifetime);
-    $starthour = isset($CFG->loglifetimestarthour);
-    $startmin  = isset($CFG->loglifetimestartminute);
+    if(!isset($CFG->loglifetime)){
+        mtrace(sprintf("No value set for '%s', aborting...", get_string('loglifetime', 'admin')));
+    }
+    
+    $starthour = isset($CFG->loglifetimestarthour)   $CFG->loglifetimestarthour)   ? : 0;
+    $startmin  = isset($CFG->loglifetimestartminute) $CFG->loglifetimestartminute) ? : 0;
     $cleanup_start = time();
     if ($lifetime and $starthour and $startmin) {  // value in days
         require_once($CFG->dirroot.'/lib/statslib.php'); //need stats_get_base_daily() to know when today started
