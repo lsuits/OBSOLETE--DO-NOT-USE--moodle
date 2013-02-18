@@ -1365,43 +1365,51 @@ function grade_cron() {
         $grade_grade->update('locktime');
     }
     $rs->close();
-
-    //TODO: do not run this cleanup every cron invocation
-    // cleanup history tables
-    $gradehistoryconfigs_are_set = (isset($CFG->gradehistorylifetime) && isset($CFG->gradehistorylifetimestarthour) && isset($CFG->gradehistorylifetimestartminute));
-    if ($gradehistoryconfigs_are_set) {  // value in days
+    
+    // cleanup history tables occaisionally
+    if (!isset($CFG->gradehistorylifetime)) {  // value in days; we cannot choose a default for this
+        mtrace(sprintf("\n[WARNING] No value set for '%s'...skipping grade history pruning.\n"
+                ,get_string('gradehistorylifetime', 'grades')
+                ));        
         
+    }elseif($CFG->gradehistorylifetime == 0){
+        mtrace(sprintf("\n[INFO] Config '%s' is set to '%s'...skipping grade history pruning.\n", 
+                get_string('gradehistorylifetime', 'grades'),
+                get_string('neverdeletehistory', 'grades')
+                ));        
+    }else{  //we can proceed
         require_once($CFG->dirroot.'/lib/statslib.php');
-        $timetocheck = stats_get_base_daily() + $CFG->gradehistorylifetimestarthour*60*60 + $CFG->gradehistorylifetimestartminute*60;
-        $timetocheck2 = $timetocheck + 3600;
+        mtrace(sprintf("Grade history retention policy '%s' is set to %s days\nChecking for appropriate time..."
+                , get_string('gradehistorylifetime', 'grades')
+                , $CFG->gradehistorylifetime
+                ));
         
-        if ((time() > $timetocheck) && (time() < $timetocheck2)) {
-            mtrace(sprintf("Time now is within the designated window for pruning grade history {%s - %s}", 
-                strftime('%l:%M %P', $timetocheck), strftime('%l:%M %P', $timetocheck2)));
-            mtrace("Begin grade history logs pruning\n");
+        //use default values quietly, if user has not set them in admin/server/cleanup
+        //@todo should we explicitly complain and tell the user that they have not set something? even though
+        //this condition SHOULD get caught when they try to run without having set a value for 'gradehistorylifetime'
+        $starthour = isset($CFG->gradehistorylifetimestarthour)   ? $CFG->gradehistorylifetimestarthour   : 10; 
+        $startmin  = isset($CFG->gradehistorylifetimestartminute) ? $CFG->gradehistorylifetimestartminute : 0;
+        
+        //setup time interval for cleanup to occur
+        $check_window_start = stats_get_base_daily() + $starthour*60*60 + $startmin*60;
+        $check_window_end = $check_window_start + 3600;
+        
+        if ((time() > $check_window_start) && (time() < $check_window_end)) {
+            mtrace("Begin grade history logs pruning...\n");
             
             $histlifetime = $now - ($CFG->gradehistorylifetime * 3600 * 24);
             $tables = array('grade_outcomes_history', 'grade_categories_history', 'grade_items_history', 'grade_grades_history', 'scale_history');
             
             foreach ($tables as $table) {
-                if ($DB->delete_records_select($table, "timemodified < ?", array($histlifetime))) {
-                    mtrace("    Deleted old grade history records from '$table'");
-                }else{
-                    mtrace(sprintf("No records were deleted"));     
-                }
+                $DB->delete_records_select($table, "timemodified < ?", array($histlifetime));
+                mtrace("    Deleted old grade history records from '$table'");
             }
+            mtrace("Finished pruning grades history");
         }else{
-            mtrace(sprintf("NOT within the designated window for pruning grade history {%s - %s}", 
-            strftime('%l:%M %P', $timetocheck), strftime('%l:%M %P', $timetocheck2)));
+            mtrace(sprintf("NOT within the designated window for pruning grade history {%s - %s}...skipping.", 
+                    strftime('%l:%M %P', $check_window_start), strftime('%l:%M %P', $check_window_end)));
         }
-    }else{
-        mtrace("\n\n-----WARNING!!! All config values must be set!!!");
-        !isset($CFG->gradehistorylifetime)           ? mtrace("ensure you have set a value for 'gradehistorylifetime'") :null;
-        !isset($CFG->gradehistorylifetimestarthour)  ? mtrace("ensure you have set a value for 'gradehistorylifetimestarthour'") :null;
-        !isset($CFG->gradehistorylifetimestartminute)? mtrace("ensure you have set a value for 'gradehistorylifetimestartminute'") :null;
-        mtrace("-----Skipping grade history pruning operation!!!!\n\n");
     }
-    
 }
 
 /**
