@@ -1387,7 +1387,7 @@ function grade_cron() {
                 if ($DB->delete_records_select($table, "timemodified < ?", array($histlifetime))) {
                     mtrace("    Deleted old grade history records from '$table'");
                 }else{
-                    mtrace(sprintf("ERROR deleting history from %s table", $table));     
+                    mtrace(sprintf("No records were deleted"));     
                 }
             }
         }else{
