@@ -65,48 +65,51 @@ function cron_run() {
 
 
     // Delete old logs to save space via a timer
-    mtrace("Running logs clean-up tasks");
-    if(!isset($CFG->loglifetime)){
-        mtrace(sprintf("No value set for '%s', aborting...", get_string('loglifetime', 'admin')));
-    }
+    mtrace("Running occaisional logs clean-up tasks");
     
-    $starthour = isset($CFG->loglifetimestarthour)   $CFG->loglifetimestarthour)   ? : 0;
-    $startmin  = isset($CFG->loglifetimestartminute) $CFG->loglifetimestartminute) ? : 0;
-    $cleanup_start = time();
-    if ($lifetime and $starthour and $startmin) {  // value in days
-        require_once($CFG->dirroot.'/lib/statslib.php'); //need stats_get_base_daily() to know when today started
-        mtrace(sprintf("checking whether we need to prune logs; logs retention policy is set for %s days", $CFG->loglifetime));
+    if(!isset($CFG->loglifetime)){
+        mtrace(sprintf("\n[WARNING] No value set for '%s'...aborting logs history pruning.\n"
+             ,get_string('loglifetime', 'admin')
+             ));        
+    }elseif($CFG->loglifetime == 0){
+        mtrace(sprintf("\n[INFO] Config '%s' is set to '%s'...skipping logs history pruning.\n", 
+                get_string('loglifetime', 'admin'),
+                get_string('neverdeletelogs', 'admin')
+                ));        
+    }else{
+    
+        mtrace(sprintf("Logs retention policy is set for %s days; checking for appropriate time window...", 
+                $CFG->loglifetime));
         
-        //calculate the timestamp when our log-pruning window starts
-        $check_window_start = stats_get_base_daily() + $CFG->loglifetimestarthour*60*60 + $CFG->loglifetimestartminute*60;
-        
-        //calculate the timestamp of end of the window
+        //if user has not saved either of these via admin/server/cleanup, we need defaults
+        $starthour = isset($CFG->loglifetimestarthour)   ? $CFG->loglifetimestarthour   : 0;
+        $startmin  = isset($CFG->loglifetimestartminute) ? $CFG->loglifetimestartminute : 0;
+
+        //need stats_get_base_daily() to know when today started
+        require_once($CFG->dirroot.'/lib/statslib.php');
+
+        //calculate the bounds of the temporal window in which we can run
+        $check_window_start = stats_get_base_daily() + $starthour*60*60 + $startmin*60;
         $check_window_end = $check_window_start + 3600;
-        
-        
+
         //to prune or not to prune?
         if ((time() > $check_window_start) && (time() < $check_window_end)) {
-            mtrace(sprintf("We are within the window {%s - %s}, pruning logs...", 
-                    strftime('%l:%M %P', $check_window_start),strftime('%l:%M %P', $check_window_end)));
-            
+            mtrace(sprintf("Begin logs pruning..."));
+
             $loglifetime = $timenow - ($CFG->loglifetime * 3600 * 24);
             $DB->delete_records_select("log", "time < ?", array($loglifetime));
-            
-            mtrace(" Deleted old log records");
-            mtrace(sprintf("Finished cleaning up logs after %s seconds", time()-$cleanup_start));
+
+            mtrace(sprintf("Finished logs pruning..."));
         }else{
-            mtrace(sprintf("NOT within the window {%s - %s}, skipping logs-pruning routine...", 
-                    strftime('%l:%M %P', $check_window_start),strftime('%l:%M %P', $check_window_end)));
+            mtrace(sprintf("NOT within the window {%s - %s}, skipping..."
+                    ,strftime('%l:%M %P', $check_window_start)
+                    ,strftime('%l:%M %P', $check_window_end)
+                    ));
         }
         
-    }else{
-        mtrace("\n\n-----WARNING!!! All config values must be set!!!");
-        !isset($lifetime)   ? mtrace("ensure you have set a value for 'loglifetime'") :null;
-        !isset($starthour)  ? mtrace("ensure you have set a value for 'loglifetimestarthour'") :null;
-        !isset($startmin)   ? mtrace("ensure you have set a value for 'loglifetimestartminute'") :null;
-        mtrace("-----Skipping logs history pruning operation!!!!\n\n");
     }
-
+    mtrace("forcing php to ext()");
+    exit();
 
     // Run cleanup core cron jobs, but not every time since they aren't too important.
     // These don't have a timer to reduce load, so we'll use a random number

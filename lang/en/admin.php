@@ -705,6 +705,7 @@ $string['navshowcategories'] = 'Show course categories';
 $string['navshowmycoursecategories'] = 'Show my course categories';
 $string['navshowmycoursecategories_help'] = 'If enabled courses in the users my courses branch will be shown in categories.';
 $string['neverdeleteruns'] = 'Never delete runs';
+$string['neverdeletelogs'] = 'Never delete logs';
 $string['nobookmarksforuser'] = 'You do not have any bookmarks.';
 $string['nodatabase'] = 'No database';
 $string['nohttpsformobilewarning'] = 'It is recommended to enable HTTPS with a valid certificate. The Moodle app will always try to use a secured connection first.';
