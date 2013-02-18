@@ -108,8 +108,7 @@ function cron_run() {
         }
         
     }
-    mtrace("forcing php to ext()");
-    exit();
+
 
     // Run cleanup core cron jobs, but not every time since they aren't too important.
     // These don't have a timer to reduce load, so we'll use a random number
