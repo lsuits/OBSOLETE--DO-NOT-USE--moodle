@@ -1368,18 +1368,18 @@ function grade_cron() {
     
     // cleanup history tables occaisionally
     if (!isset($CFG->gradehistorylifetime)) {  // value in days; we cannot choose a default for this
-        mtrace(sprintf("\n[WARNING] No value set for '%s'...skipping grade history pruning.\n"
+        mtrace(sprintf("\n  [WARNING] No value set for '%s'...skipping grade history pruning.\n"
                 ,get_string('gradehistorylifetime', 'grades')
                 ));        
         
     }elseif($CFG->gradehistorylifetime == 0){
-        mtrace(sprintf("\n[INFO] Config '%s' is set to '%s'...skipping grade history pruning.\n", 
+        mtrace(sprintf("\n  [INFO] Config '%s' is set to '%s'...skipping grade history pruning.\n", 
                 get_string('gradehistorylifetime', 'grades'),
                 get_string('neverdeletehistory', 'grades')
                 ));        
     }else{  //we can proceed
         require_once($CFG->dirroot.'/lib/statslib.php');
-        mtrace(sprintf("Grade history retention policy '%s' is set to %s days\nChecking for appropriate time..."
+        mtrace(sprintf("  Grade history retention policy '%s' is set to %s days\n  Checking for appropriate time"
                 , get_string('gradehistorylifetime', 'grades')
                 , $CFG->gradehistorylifetime
                 ));
@@ -1395,7 +1395,7 @@ function grade_cron() {
         $check_window_end = $check_window_start + 3600;
         
         if ((time() > $check_window_start) && (time() < $check_window_end)) {
-            mtrace("Begin grade history logs pruning...\n");
+            mtrace("  Begin grade history logs pruning");
             
             $histlifetime = $now - ($CFG->gradehistorylifetime * 3600 * 24);
             $tables = array('grade_outcomes_history', 'grade_categories_history', 'grade_items_history', 'grade_grades_history', 'scale_history');
@@ -1404,9 +1404,9 @@ function grade_cron() {
                 $DB->delete_records_select($table, "timemodified < ?", array($histlifetime));
                 mtrace("    Deleted old grade history records from '$table'");
             }
-            mtrace("Finished pruning grades history");
+            mtrace("  Finished pruning grades history");
         }else{
-            mtrace(sprintf("NOT within the designated window for pruning grade history {%s - %s}...skipping.", 
+            mtrace(sprintf("  NOT within the designated window for pruning grade history {%s - %s}...skipping.", 
                     strftime('%l:%M %P', $check_window_start), strftime('%l:%M %P', $check_window_end)));
         }
     }
