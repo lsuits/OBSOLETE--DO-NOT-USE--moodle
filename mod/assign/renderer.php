@@ -619,11 +619,7 @@ class mod_assign_renderer extends plugin_renderer_base {
                 $plagiarsmlinks = '';
             }
             $image = $this->output->pix_icon(file_file_icon($file), $filename, 'moodle', array('class'=>'icon'));
-            /**
-             * @TODO use moodle htmlwriter
-             * @TODO ensure that ids are unused
-             */
-            
+  
             $author = html_writer::tag('div', sprintf("Author: %s", $file->get_author()), array('id'=>'file-author'));
             $license = html_writer::tag('div', sprintf("License: %s", $file->get_license()), array('id'=>'file-license'));
             
