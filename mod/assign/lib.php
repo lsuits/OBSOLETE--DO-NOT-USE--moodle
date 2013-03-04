@@ -276,9 +276,21 @@ function assign_print_overview($courses, &$htmlarray) {
 
 
     // get all user submissions, indexed by assignment id
-    $mysubmissions = $DB->get_records_sql("SELECT a.id AS assignment, a.nosubmissions AS offline, g.timemodified AS timemarked, g.grader AS grader, g.grade AS grade, s.status AS status
-                            FROM {assign} a LEFT JOIN {assign_grades} g ON g.assignment = a.id AND g.userid = ? LEFT JOIN {assign_submission} s ON s.assignment = a.id AND s.userid = ?
-                              WHERE a.id $sqlassignmentids", array_merge(array($USER->id, $USER->id), $assignmentidparams));
+    $mysubmissions = $DB->get_records_sql("SELECT
+                                               a.id AS assignment,
+                                               a.nosubmissions AS nosubmissions,
+                                               g.timemodified AS timemarked,
+                                               g.grader AS grader,
+                                               g.grade AS grade,
+                                               s.status AS status
+                                           FROM {assign} a
+                                           LEFT JOIN {assign_grades} g ON
+                                               g.assignment = a.id AND
+                                               g.userid = ?
+                                           LEFT JOIN {assign_submission} s ON
+                                               s.assignment = a.id
+                                               AND s.userid = ?
+                                           WHERE a.id $sqlassignmentids", array_merge(array($USER->id, $USER->id), $assignmentidparams));
 
     foreach ($assignments as $assignment) {
         $str = '<div class="assign overview"><div class="name">'.$strassignment. ': '.
@@ -312,7 +324,7 @@ function assign_print_overview($courses, &$htmlarray) {
             $str .= '<div class="details">';
             $str .= get_string('mysubmission', 'assign');
             $submission = $mysubmissions[$assignment->id];
-            if ($submission->offline) {
+            if ($submission->nosubmissions) {
                  $str .= get_string('offline', 'assign');
             } else if(!$submission->status || $submission->status == 'draft'){
                  $str .= $strnotsubmittedyet;
